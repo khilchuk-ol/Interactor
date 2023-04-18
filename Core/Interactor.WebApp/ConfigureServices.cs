@@ -1,0 +1,28 @@
+using Microsoft.AspNetCore.Mvc;
+
+namespace Interactor.WebApp;
+
+public static class ConfigureServices
+{
+    public static IServiceCollection AddWebAppServices(this IServiceCollection services)
+    {
+        services.AddDatabaseDeveloperPageExceptionFilter();
+        
+        services.AddHttpContextAccessor();
+        
+        services.AddControllersWithViews();
+
+        services.AddRazorPages();
+        
+        // Customise default API behaviour
+        services.Configure<ApiBehaviorOptions>(options =>
+            options.SuppressModelStateInvalidFilter = true);
+        
+        services.AddOpenApiDocument((configure, _) =>
+        {
+            configure.Title = "Interactor API";
+        });
+
+        return services;
+    }
+}

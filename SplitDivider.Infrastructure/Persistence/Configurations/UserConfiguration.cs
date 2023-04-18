@@ -1,0 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace SplitDivider.Infrastructure.Persistence.Configurations;
+
+public class UserConfiguration : IEntityTypeConfiguration<User>
+{
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+        builder.Property(u => u.Id)
+            .ValueGeneratedNever();
+        
+        builder.Property(u => u.RegistrationDt)
+            .HasColumnType("timestamp")
+            .IsRequired();
+        
+        builder.Property(u => u.Gender)
+            .IsRequired();
+        
+        builder.Property(u => u.CountryId)
+            .IsRequired();
+        
+        builder.Property(u => u.State)
+            .IsRequired();
+    }
+}

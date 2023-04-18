@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-preview.2.23128.3" />
+      <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
+      <PackageReference Include="RabbitMQ.Client.Core.DependencyInjection" Version="5.0.0" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared.Values\Shared.Values.csproj" />
+      <ProjectReference Include="..\Interactor.Domain\Interactor.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
