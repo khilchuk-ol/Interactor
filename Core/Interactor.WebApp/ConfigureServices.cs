@@ -13,6 +13,8 @@ public static class ConfigureServices
         services.AddControllersWithViews();
 
         services.AddRazorPages();
+
+        services.AddHealthChecks();
         
         // Customise default API behaviour
         services.Configure<ApiBehaviorOptions>(options =>

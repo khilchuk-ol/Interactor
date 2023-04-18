@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Interactor.WebApp.Controllers;
 
 [ApiController]
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {

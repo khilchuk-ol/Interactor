@@ -13,7 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.4" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.2.23128.3" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
       <PackageReference Include="NSwag.Core" Version="13.18.2" />
     </ItemGroup>
