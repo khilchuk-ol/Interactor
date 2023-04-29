@@ -23,6 +23,7 @@ public static class ConfigureServices
         services.AddOpenApiDocument((configure, _) =>
         {
             configure.Title = "Interactor API";
+            configure.Description = "Interactor service API documentation";
         });
 
         return services;

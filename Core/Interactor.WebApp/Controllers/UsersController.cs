@@ -1,11 +1,9 @@
 using Interactor.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Interactor.WebApp.Controllers;
 
 [ApiController]
-//[Authorize]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {

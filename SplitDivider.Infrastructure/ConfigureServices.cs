@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,8 +28,17 @@ public static class ConfigureServices
                 options.UseMySQL(configuration.GetConnectionString("DefaultConnection")!,
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
+        
+        services.AddScoped<IApplicationDbContext>(provider =>
+        {
+            var context =  provider.GetRequiredService<ApplicationDbContext>();
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            context.Database.EnsureCreated();
+
+            return context;
+        });
+        
+        services.AddScoped<ApiAuthorizationDbContext<ApplicationUser>>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<ApplicationDbContextInitializer>();
 
@@ -44,8 +53,8 @@ public static class ConfigureServices
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
 
-        services.AddAuthentication()
-            .AddIdentityServerJwt();
+        // services.AddAuthentication()
+        //     .AddIdentityServerJwt();
 
         services.AddAuthorization(options =>
             options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));

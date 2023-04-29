@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using Shared.Values.Enums;
 using SplitDivider.Application.Common.Interfaces;
@@ -32,7 +33,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
             State = UserState.Registered,
             CountryId = request.CountryId,
             Gender = request.Gender,
-            RegistrationDt = DateTime.Parse(request.RegDt)
+            RegistrationDt = DateTime.Parse(request.RegDt, CultureInfo.InvariantCulture)
         };
 
         _context.AppUsers.Add(entity);

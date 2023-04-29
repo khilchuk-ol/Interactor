@@ -1,3 +1,4 @@
+using System.Globalization;
 using FluentValidation;
 using Shared.Values.ValueObjects;
 
@@ -11,7 +12,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .Must(Gender.IsSupported);
 
         RuleFor(u => u.RegDt)
-            .Must(dt => DateTime.TryParse(dt, out _));
+            .Must(dt => DateTime.TryParse(dt, CultureInfo.InvariantCulture, out _));
 
         RuleFor(u => u.CountryId)
             .Must(cid => cid >= 0);

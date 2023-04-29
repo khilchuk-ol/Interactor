@@ -1,12 +1,16 @@
+using Newtonsoft.Json;
+
 namespace Shared.Values.EventBus.Common;
 
+[JsonObject(MemberSerialization.OptOut)]
 public abstract class BaseEvent
 {
     public abstract string GetEventType();
 
-    public abstract string ToEventData();
-
-    public abstract string GetContentType();
+    public string ToEventData()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 
     public abstract BaseEvent FromEventData(string eventData);
 }

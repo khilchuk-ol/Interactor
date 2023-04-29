@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using Shared.Values.ValueObjects;
 using SplitDivider.Application.Common.Exceptions;
@@ -68,7 +69,7 @@ public class UpdateSplitCommandHandler : IRequestHandler<UpdateSplitCommand>
         
         if (request.MinRegDt != null)
         {
-            entity.MinRegistrationDt = DateTime.Parse(request.MinRegDt);
+            entity.MinRegistrationDt = DateTime.Parse(request.MinRegDt, CultureInfo.InvariantCulture);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

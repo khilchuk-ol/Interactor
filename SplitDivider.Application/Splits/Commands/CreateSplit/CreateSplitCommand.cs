@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using Shared.Values.ValueObjects;
 using SplitDivider.Application.Common.Interfaces;
@@ -36,7 +37,7 @@ public class CreateSplitCommandHandler : IRequestHandler<CreateSplitCommand, int
             ActionsWeights = request.ActionsWeights.ToDictionary(p => InteractionType.From(p.Key), p => p.Value),
             CountryIds = request.CountryIds?.ToList(),
             Gender = request.Gender,
-            MinRegistrationDt = request.MinRegDt != null ? DateTime.Parse(request.MinRegDt) : null
+            MinRegistrationDt = request.MinRegDt != null ? DateTime.Parse(request.MinRegDt, CultureInfo.InvariantCulture) : null
         };
 
         _context.Splits.Add(entity);

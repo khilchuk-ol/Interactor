@@ -1,3 +1,4 @@
+using System.Globalization;
 using FluentValidation;
 using Shared.Values.ValueObjects;
 
@@ -31,7 +32,7 @@ public class UpdateSplitCommandValidator : AbstractValidator<UpdateSplitCommand>
             .When(s => s.Gender != null);
 
         RuleFor(s => s.MinRegDt)
-            .Must(dt => DateTime.TryParse(dt, out _))
+            .Must(dt => DateTime.TryParse(dt, CultureInfo.InvariantCulture, out _))
             .When(s => s.MinRegDt != null);
 
         RuleFor(s => s.CountryIds)

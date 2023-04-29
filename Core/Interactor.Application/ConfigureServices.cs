@@ -10,7 +10,11 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        var factory = new ConnectionFactory { HostName = "localhost" };
+        var factory = new ConnectionFactory
+        {
+            HostName = "localhost",
+            DispatchConsumersAsync = true
+        };
 
         services.AddSingleton<IAsyncConnectionFactory>(factory);
         services.AddScoped<IEventBusPublisher, Publisher>();

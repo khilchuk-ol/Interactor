@@ -9,18 +9,26 @@ namespace SplitDivider.WebApp.EventBus.Handlers.UserEvents;
 
 public class UserChangedEventHandler : IEventBusEventHandler
 {
-    private ISender _mediator;
+    private IServiceProvider _services;
     
-    public UserChangedEventHandler(ISender mediator)
+    public UserChangedEventHandler(IServiceProvider services)
     {
-        _mediator = mediator;
+        _services = services;
     }
 
-    public Task Handle(BaseEvent eEvent)
+    public async Task Handle(BaseEvent eEvent)
     {
         var eventData = (UserChangedEvent)eEvent;
+        
+        using var scope = _services.CreateScope();
+        var mediator = scope.ServiceProvider.GetService<ISender>();
+        
+        if (mediator == null)
+        {
+            throw new Exception("mediator is not found");
+        }
 
-        return _mediator.Send(new UpdateUserCommand
+        await mediator.Send(new UpdateUserCommand
         {
             Id = eventData.Id,
             CountryId = eventData.CountryId,

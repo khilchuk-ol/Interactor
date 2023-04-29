@@ -22,7 +22,14 @@ public static class ConfigureServices
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IApplicationDbContext>(provider =>
+        {
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+
+            context.Database.EnsureCreated();
+
+            return context;
+        });
         
         return services;
     }

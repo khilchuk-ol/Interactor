@@ -18,21 +18,24 @@ public class Publisher : IEventBusPublisher
     {
         using var connection = _connectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
-
-        channel.QueueDeclare(queue: eEvent.GetEventType(),
-            durable: false,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
+        
+        channel.ExchangeDeclare(
+            exchange: "interactor_direct_msg", 
+            type: "direct", 
+            durable: true);
         
         var body = Encoding.UTF8.GetBytes(eEvent.ToEventData());
-        
-        channel.BasicPublish(exchange: string.Empty,
-            routingKey: eEvent.GetContentType(),
+
+        // channel.QueueDeclare(queue: eEvent.GetEventType(),
+        //     durable: false,
+        //     exclusive: false,
+        //     autoDelete: false,
+        //     arguments: null);
+
+        channel.BasicPublish(
+            exchange: "interactor_direct_msg",
+            routingKey: eEvent.GetEventType(),
             basicProperties: null,
             body: body);
-        
-        channel.Close();
-        connection.Close();
     }
 }

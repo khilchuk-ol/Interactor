@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using NSwag;
-using NSwag.Generation.Processors.Security;
+﻿using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
 using Shared.Values.EventBus.InteractionEvents;
 using Shared.Values.EventBus.UserEvents;
@@ -28,9 +25,7 @@ public static class ConfigureServices
             //.AddDbContextCheck<ApplicationDbContext>();
 
         services.AddControllersWithViews();
-
-        services.AddRazorPages();
-
+        
         services.AddScoped<FluentValidationSchemaProcessor>(provider =>
         {
             var validationRules = provider.GetService<IEnumerable<FluentValidationRule>>();
@@ -51,43 +46,37 @@ public static class ConfigureServices
             configure.SchemaProcessors.Add(fluentValidationSchemaProcessor);
 
             configure.Title = "Split Divider API";
-            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-            {
-                Type = OpenApiSecuritySchemeType.ApiKey,
-                Name = "Authorization",
-                In = OpenApiSecurityApiKeyLocation.Header,
-                Description = "Type into the textbox: Bearer {your JWT token}."
-            });
+            configure.Description = "Split-divider service API documentation";
 
-            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            // configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            // {
+            //     Type = OpenApiSecuritySchemeType.ApiKey,
+            //     Name = "Authorization",
+            //     In = OpenApiSecurityApiKeyLocation.Header,
+            //     Description = "Type into the textbox: Bearer {your JWT token}."
+            // });
+            //
+            // configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
 
         return services;
     }
 
-    public static IServiceCollection ConfigureEventSubscription(this IServiceCollection services)
+    public static Receiver ConfigureEventSubscriptionReceiver(IServiceProvider serviceProvider)
     {
-        services.AddSingleton<IEventBusReceiver>(provider =>
+        var factory = new ConnectionFactory
         {
-            var mediator = provider.GetService<ISender>();
+            HostName = "localhost",
+            DispatchConsumersAsync = true
+        };
+        
+        var receiver = new Receiver(factory);
 
-            if (mediator == null)
-            {
-                throw new Exception("mediator is not found");
-            }
+        receiver.SubscribeToEvent(new UserRegisteredEvent(), new UserRegisteredEventHandler(serviceProvider));
+        receiver.SubscribeToEvent(new UserChangedEvent(), new UserChangedEventHandler(serviceProvider));
+        receiver.SubscribeToEvent(new UserDeletedEvent(), new UserDeletedEventHandler(serviceProvider));
+        receiver.SubscribeToEvent(new UsersInteractedEvent(), new UsersInteractedEventHandler(serviceProvider));
 
-            var factory = new ConnectionFactory { HostName = "localhost" };
-
-            var receiver = new Receiver(factory);
-
-            receiver.SubscribeToEvent(new UserChangedEvent(), new UserChangedEventHandler(mediator));
-            receiver.SubscribeToEvent(new UserDeletedEvent(), new UserDeletedEventHandler(mediator));
-            receiver.SubscribeToEvent(new UserRegisteredEvent(), new UserRegisteredEventHandler(mediator));
-            receiver.SubscribeToEvent(new UsersInteractedEvent(), new UsersInteractedEventHandler(mediator));
-
-            return receiver;
-        });
-
-        return services;
+        return receiver;
     }
 }

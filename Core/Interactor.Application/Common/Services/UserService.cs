@@ -3,6 +3,7 @@ using Interactor.Application.Common.Interfaces;
 using Interactor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Values.Enums;
+using Shared.Values.EventBus.Common;
 using Shared.Values.EventBus.UserEvents;
 using Shared.Values.ValueObjects;
 
@@ -41,6 +42,8 @@ public class UserService : IUserService
         };
 
         var entity = await _context.Users.AddAsync(user);
+
+        await _context.SaveChangesAsync(default);
 
         var eEvent = new UserRegisteredEvent
         {

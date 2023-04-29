@@ -8,18 +8,26 @@ namespace SplitDivider.WebApp.EventBus.Handlers.InteractionEvents;
 
 public class UsersInteractedEventHandler : IEventBusEventHandler
 {
-    private ISender _mediator;
+    private IServiceProvider _services;
     
-    public UsersInteractedEventHandler(ISender mediator)
+    public UsersInteractedEventHandler(IServiceProvider services)
     {
-        _mediator = mediator;
+        _services = services;
     }
 
-    public Task Handle(BaseEvent eEvent)
+    public async Task Handle(BaseEvent eEvent)
     {
         var eventData = (UsersInteractedEvent)eEvent;
+        
+        using var scope = _services.CreateScope();
+        var mediator = scope.ServiceProvider.GetService<ISender>();
+        
+        if (mediator == null)
+        {
+            throw new Exception("mediator is not found");
+        }
 
-        return _mediator.Send(new CreateRelationCommand
+        await mediator.Send(new CreateRelationCommand
         {
             UserId = eventData.UserId,
             ContactId = eventData.ContactId,

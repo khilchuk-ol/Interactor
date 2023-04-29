@@ -1,7 +1,9 @@
+using MediatR;
 using SplitDivider.Application;
 using SplitDivider.Infrastructure;
 using SplitDivider.Infrastructure.Persistence;
 using SplitDivider.WebApp;
+using ConfigureServices = SplitDivider.WebApp.ConfigureServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebAppServices();
-builder.Services.ConfigureEventSubscription();
 
 var app = builder.Build();
 
@@ -37,6 +38,10 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseOpenApi(configure =>
+{
+    configure.Path = "/api/specification.json";
+});
 app.UseSwaggerUi3(settings =>
 {
     settings.Path = "/api";
@@ -45,9 +50,9 @@ app.UseSwaggerUi3(settings =>
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseIdentityServer();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseIdentityServer();
+//app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
@@ -56,5 +61,10 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");
+
+var receiver = ConfigureServices.ConfigureEventSubscriptionReceiver(app.Services);
+receiver.StartReceiving();
+    
+app.Lifetime.ApplicationStopped.Register(receiver.Dispose);
 
 app.Run();
