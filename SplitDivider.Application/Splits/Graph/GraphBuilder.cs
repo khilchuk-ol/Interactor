@@ -6,6 +6,7 @@ using SplitDivider.Application.Common.Interfaces;
 using SplitDivider.Application.Splits.Graph.Algorithms;
 using SplitDivider.Application.Splits.Graph.Common;
 using SplitDivider.Application.Splits.Graph.Interfaces;
+using SplitDivider.Application.Splits.Graph.Serialization.Common;
 
 namespace SplitDivider.Application.Splits.Graph;
 
@@ -20,7 +21,8 @@ public class GraphBuilder : IGraphBuilder
 
     public SplitGraphDto BuildGraph(Split split, List<int> userIds)
     {
-        var qGraph = new UndirectedGraph<int, QuikGraph.Edge<int>>();
+        var qGraph = new UndirectedGraph<int, WeightedEdge<int, int>>();
+        
         var graph = new Algorithms.Common.Graph<int, int>();
         var connections = new Dictionary<int, int>();
 
@@ -44,29 +46,34 @@ public class GraphBuilder : IGraphBuilder
                 var relations = _context.Relations
                     .Where(r => r.UserId == userId && r.ContactId == contactId)
                     .ToList();
-
-                var cost = 0.0;
                 
-                foreach (var relation in relations)
+                var intCost = 1;
+
+                if (relations.Count > 0)
                 {
-                    var interaction = InteractionType.From(relation.Interaction);
+                    var cost = 0.0;
+                    
+                    foreach (var relation in relations)
+                    {
+                        var interaction = InteractionType.From(relation.Interaction);
 
-                    if (!split.ActionsWeights.Keys.Contains(interaction)) continue;
+                        if (!split.ActionsWeights.Keys.Contains(interaction)) continue;
                 
-                    var generalWeight = split.ActionsWeights[interaction];
+                        var generalWeight = split.ActionsWeights[interaction];
 
-                    var timeDiff = now.Subtract(relation.Dt).Hours / 24;
+                        var timeDiff = now.Subtract(relation.Dt).Hours / 24;
 
-                    var k = 1 / (1 + timeDiff * timeDiff);
+                        var k = 1 / (1 + timeDiff * timeDiff);
 
-                    var weight = generalWeight * k;
+                        var weight = generalWeight * k;
 
-                    cost += weight;
+                        cost += weight;
+                    }
+
+                    intCost = (int)(cost * 10);
                 }
 
-                var intCost = (int)(cost * 10);
-
-                var edge = new QuikGraph.Edge<int>(userId, contactId);
+                var edge = new WeightedEdge<int, int>(userId, contactId, intCost);
                 qGraph.AddVerticesAndEdge(edge);
                 
                 graph.AddEdge(userId, new Algorithms.Edge<int>
@@ -92,16 +99,16 @@ public class GraphBuilder : IGraphBuilder
         };
     }
 
-    private void SaveGraph(int splitId, UndirectedGraph<int, QuikGraph.Edge<int>> graph)
+    private void SaveGraph(int splitId, UndirectedGraph<int, WeightedEdge<int, int>> graph)
     {
-        var filename = $"split{splitId}.xml";
-        var fi = new FileInfo(@"../../Visualization/" + filename);
+        var filename = $"split{splitId}.graphml";
+        var fi = new FileInfo(@"Visualization/" + filename);
 
         using (var fs = fi.Open(FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
         {
             using (var xmlWriter = XmlWriter.Create(fs))
             {
-                graph.SerializeToGraphML<int, QuikGraph.Edge<int>, UndirectedGraph<int, QuikGraph.Edge<int>>>(xmlWriter);
+                graph.SerializeToGraphML<int, WeightedEdge<int, int>, UndirectedGraph<int, WeightedEdge<int, int>>>(xmlWriter);
             }
         }
     }

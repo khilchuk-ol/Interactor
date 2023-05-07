@@ -28,4 +28,8 @@
       <PackageReference Include="ZymLabs.NSwag.FluentValidation" Version="0.6.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Visualization" />
+    </ItemGroup>
+
 </Project>

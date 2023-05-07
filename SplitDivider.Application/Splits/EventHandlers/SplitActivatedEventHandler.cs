@@ -48,7 +48,7 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
             usersInSplitQuery = usersInSplitQuery.Where(u => u.RegistrationDt >= split.MinRegistrationDt);
         }
         
-        if (split.CountryIds != null)
+        if (split.CountryIds is { Count: > 0 })
         {
             usersInSplitQuery = usersInSplitQuery.Where(u => split.CountryIds.Contains(u.CountryId));
         }
@@ -68,6 +68,18 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
                 UserId = id,
                 SplitId = split.Id,
                 Group = UserSplit.GroupControl
+            };
+
+            _context.UserSplits.Add(userGroup);
+        }
+        
+        foreach (var id in groups.second)
+        {
+            var userGroup = new UserSplit
+            {
+                UserId = id,
+                SplitId = split.Id,
+                Group = UserSplit.GroupTest
             };
 
             _context.UserSplits.Add(userGroup);

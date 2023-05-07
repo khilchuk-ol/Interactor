@@ -34,7 +34,6 @@
 
     <ItemGroup>
       <Folder Include="Relations\Commands" />
-      <Folder Include="Visualization" />
     </ItemGroup>
 
 </Project>

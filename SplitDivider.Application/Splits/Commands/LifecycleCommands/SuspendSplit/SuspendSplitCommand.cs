@@ -21,7 +21,7 @@ public class SuspendSplitCommandHandler : IRequestHandler<SuspendSplitCommand>
     public async Task Handle(SuspendSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {

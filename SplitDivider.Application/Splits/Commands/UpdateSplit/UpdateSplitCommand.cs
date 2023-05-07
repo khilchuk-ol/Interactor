@@ -10,7 +10,7 @@ namespace SplitDivider.Application.Splits.Commands.UpdateSplit;
 
 public record UpdateSplitCommand : IRequest
 {
-    public int Id { get; init; }
+    public int? Id { get; set; }
     
     public string? Name { get; init; }
     
@@ -35,7 +35,7 @@ public class UpdateSplitCommandHandler : IRequestHandler<UpdateSplitCommand>
     public async Task Handle(UpdateSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {

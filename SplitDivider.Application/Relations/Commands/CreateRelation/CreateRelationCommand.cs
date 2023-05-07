@@ -27,7 +27,8 @@ public class CreateRelationCommandHanler : IRequestHandler<CreateRelationCommand
         {
             UserId = request.UserId,
             ContactId = request.ContactId,
-            Interaction = request.InteractionType
+            Interaction = request.InteractionType,
+            Dt = DateTime.Now
         };
 
         _context.Relations.Add(entity);

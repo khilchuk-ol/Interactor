@@ -20,7 +20,7 @@ public class CloseSplitCommandHandler : IRequestHandler<CloseSplitCommand>
     public async Task Handle(CloseSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {

@@ -51,16 +51,13 @@ public class SplitsController : ApiControllerBase
         return NoContent();
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Update(int id, UpdateSplitCommand command)
     {
-        if (id != command.Id)
-        {
-            return BadRequest();
-        }
+        command.Id = id;
 
         await Mediator.Send(command);
 

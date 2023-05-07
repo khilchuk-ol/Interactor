@@ -18,7 +18,7 @@ public class DeleteSplitCommandHandler : IRequestHandler<DeleteSplitCommand>
     public async Task Handle(DeleteSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {

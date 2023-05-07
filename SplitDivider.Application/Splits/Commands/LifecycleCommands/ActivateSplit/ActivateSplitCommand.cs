@@ -21,7 +21,7 @@ public class ActivateSplitCommandHandler : IRequestHandler<ActivateSplitCommand>
     public async Task Handle(ActivateSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {
