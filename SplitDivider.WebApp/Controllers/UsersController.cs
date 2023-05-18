@@ -4,7 +4,7 @@ using SplitDivider.Application.Users.Queries.GetUserSplits;
 
 namespace SplitDivider.WebApp.Controllers;
 
-//[Authorize]
+[Authorize]
 public class UsersController : ApiControllerBase
 {
     [HttpGet("{id}/splits")]

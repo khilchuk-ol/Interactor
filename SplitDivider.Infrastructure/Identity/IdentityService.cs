@@ -79,4 +79,30 @@ public class IdentityService : IIdentityService
 
         return result.ToApplicationResult();
     }
+
+    public async Task<bool> AddRoleForUser(string userId, string role)
+    {
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var res = await _userManager.AddToRoleAsync(user, role);
+        
+        return res.Succeeded;
+    }
+
+    public async Task<bool> DeleteRoleForUser(string userId, string role)
+    {
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var res = await _userManager.RemoveFromRoleAsync(user, role);
+        
+        return res.Succeeded;
+    }
 }

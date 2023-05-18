@@ -15,6 +15,11 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddWebAppServices(this IServiceCollection services)
     {
+        // services.AddHttpsRedirection(opts =>
+        // {
+        //     opts.HttpsPort = 5001;
+        // });
+        
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -47,16 +52,6 @@ public static class ConfigureServices
 
             configure.Title = "Split Divider API";
             configure.Description = "Split-divider service API documentation";
-
-            // configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-            // {
-            //     Type = OpenApiSecuritySchemeType.ApiKey,
-            //     Name = "Authorization",
-            //     In = OpenApiSecurityApiKeyLocation.Header,
-            //     Description = "Type into the textbox: Bearer {your JWT token}."
-            // });
-            //
-            // configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
 
         return services;

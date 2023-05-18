@@ -26,12 +26,6 @@ public class Publisher : IEventBusPublisher
         
         var body = Encoding.UTF8.GetBytes(eEvent.ToEventData());
 
-        // channel.QueueDeclare(queue: eEvent.GetEventType(),
-        //     durable: false,
-        //     exclusive: false,
-        //     autoDelete: false,
-        //     arguments: null);
-
         channel.BasicPublish(
             exchange: "interactor_direct_msg",
             routingKey: eEvent.GetEventType(),

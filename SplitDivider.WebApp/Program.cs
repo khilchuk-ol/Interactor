@@ -1,4 +1,3 @@
-using MediatR;
 using SplitDivider.Application;
 using SplitDivider.Infrastructure;
 using SplitDivider.Infrastructure.Persistence;
@@ -35,7 +34,7 @@ else
 }
 
 app.UseHealthChecks("/health");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseOpenApi(configure =>
@@ -50,9 +49,10 @@ app.UseSwaggerUi3(settings =>
 
 app.UseRouting();
 
-//app.UseAuthentication();
 //app.UseIdentityServer();
-//app.UseAuthorization();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
