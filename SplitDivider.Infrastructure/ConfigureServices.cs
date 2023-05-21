@@ -45,7 +45,12 @@ public static class ConfigureServices
         services.AddScoped<ApplicationDbContextInitializer>();
 
         services
-            .AddDefaultIdentity<ApplicationUser>()
+            .AddDefaultIdentity<ApplicationUser>(opts =>
+            {
+                opts.SignIn.RequireConfirmedAccount = false;
+                opts.SignIn.RequireConfirmedEmail = false;
+                opts.SignIn.RequireConfirmedPhoneNumber = false;
+            })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 

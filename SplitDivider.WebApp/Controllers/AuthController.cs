@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using SplitDivider.Infrastructure.Identity;
 using SplitDivider.WebApp.Authorization.Models;
 
@@ -18,8 +17,16 @@ public class AuthController : ApiControllerBase
         _userManager = userManager;
         _signInManager = signInManager;
     }
+
+    [Microsoft.AspNetCore.Mvc.HttpGet("me")]
+    public async Task<ApplicationUser?> GeCurrenttUser()
+    {
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+
+        return user;
+    }
     
-    [HttpPost("signup")]
+    [Microsoft.AspNetCore.Mvc.HttpPost("signup")]
     public async Task<Response?> Register(RegistrationModel model)
     {
         if(ModelState.IsValid)
@@ -47,26 +54,33 @@ public class AuthController : ApiControllerBase
         return null;
     }
     
-    [HttpPost("login")]
-    public async Task<bool> Login(LoginModel model)
+    [Microsoft.AspNetCore.Mvc.HttpPost("login")]
+    public async Task<ApplicationUser?> Login(LoginModel model)
     {
         if (ModelState.IsValid)
         {
+            var signedUser = await _userManager.FindByEmailAsync(model.Email);
+
+            if (signedUser == null) throw new UnauthorizedAccessException();
+
             var result = await _signInManager.PasswordSignInAsync(
-                model.Email, 
+                signedUser.UserName, 
                 model.Password, 
                 model.RememberMe, 
                 false);
 
-            return result.Succeeded;
+            if (!result.Succeeded) throw new UnauthorizedAccessException();
+
+            return signedUser;
         }
 
-        return false;
+        return null;
     }
  
-    [HttpPost("signout")]
+    [Microsoft.AspNetCore.Mvc.HttpPost("signout")]
     public async Task Logout()
     {
         await _signInManager.SignOutAsync();
+        HttpContext.Session.Clear();
     }
 }

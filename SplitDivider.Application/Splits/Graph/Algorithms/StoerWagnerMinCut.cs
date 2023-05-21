@@ -25,16 +25,7 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         public int T { get; init; }
         public float Weight { get; init; }
     }
-    
-    /**
-     * Computes the minimum cut (MinCut) of the given non-negatively weighted graph.
-     * Running the algorithm results in two disjoint subgraphs, so that the sum of
-     * weights between these two subgraphs is minimal.
-     *
-     * @param g weighted graph you want to cut in half
-     * @return a @{@link MinCut} that contains both the first and second disjoint graph,
-     * the removed edges that lead to that partition and their summed-up weight.
-     */
+
     public MinCut ComputeMinCut(Graph<TVertex, int> g) 
     {
         if(g.VerticesCount < 2)
@@ -77,9 +68,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return ConstructMinCutResult(originalGraph, currentBestPartition);
     }
 
-    // we do a two-pass algorithm to reconstruct the sub-graphs:
-    // - first we distribute the vertices into their respective graph
-    // - second we align edges: if they cross graphs they will end in the list, otherwise in the respective graph
     private MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int>? partition) 
     {
         if (partition == null)
@@ -110,7 +98,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
             }
         }
 
-        // we need to dedupe the edges for directed graphs, so we don't double-count the weights
         var edgeSet = new HashSet<ValueTuple<int, int>>();
         
         foreach (var v in originalGraph.GetVerticesIds()) 
@@ -146,9 +133,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return new MinCut(first, second, cutWeight);
     }
 
-    // bascially we're copying the whole graph into a new one, we leave the vertex "t" out of it (including the edge between "s" and "t")
-    // and merge all other edges that "s" and "t" pointed together towards by summing their weight.
-    // there might be left-over edges pointing from "t" but not through "s", we have to attach them to "s" as well.
     Graph<TVertex, int> MergeVerticesFromCut(Graph<TVertex, int> g, CutOfThePhase cutOfThePhase) 
     {
         var toReturn = new Graph<TVertex, int>();
@@ -173,7 +157,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
                 }
             }
 
-            // on hitting "s" we are checking for the summation case (similar edge coming from "t"), otherwise just copy it over
             if (cutOfThePhase.S == v) 
             {
                 toReturn.AddVertex(g.GetVertex(v));
@@ -215,7 +198,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
             }
         }
 
-        // for all edges from "t" that we haven't transferred to "s" yet, but do not go towards "s"
         foreach (var e in g.GetEdges(cutOfThePhase.T)) 
         {
             if (e.DestinationVertexId == cutOfThePhase.S) continue;
@@ -246,11 +228,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return MaximumAdjacencySearch(g, null);
     }
 
-    /**
-     * This iterates the given graph starting from "start" in a maximum adjacency fashion.
-     * That means, it will always connect to the next vertex whose inlinks are having the largest edge weight sum.
-     * This ordering implicitly gives us a "cut of the phase", as the last two added vertices are the ones with least inlink weights.
-     */
     CutOfThePhase MaximumAdjacencySearch(Graph<TVertex, int> g, int? start)
     {
         if (start == null) start = g.GetVerticesIds().First();
@@ -268,7 +245,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
 
             foreach (var next in candidates)
             {
-                // compute the inlink weight sum from all vertices in "maxAdjacencyOrderedList" towards vertex "next"
                 int weightSum = 0;
 
                 foreach (var s in maxAdjacencyOrderedList)
@@ -297,7 +273,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
             cutWeight.Add(maxWeight);
         }
 
-        // we take the last two vertices in that list and their weight as a cut of the phase
         var n = maxAdjacencyOrderedList.Count;
 
         return new CutOfThePhase

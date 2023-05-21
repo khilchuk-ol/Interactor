@@ -1,0 +1,46 @@
+.App {
+  text-align: center;
+}
+
+.App button {
+  border: none;
+}
+
+.App button:hover, .link:hover {
+  filter: brightness(85%)
+}
+
+.input-title {
+  color: black;
+  font-weight: 500;
+}
+
+#light-card-with-input {
+  width: 20rem;
+  padding: 1rem;
+  background: #f7f7f7;
+  color: #000000;
+}
+
+#light-card-with-input button {
+  background: #898989;
+  width: 60%;
+}
+
+#light-card-with-input #last-div {
+  padding-top: 0.4rem;
+  padding-bottom: 1rem;
+}
+
+.narrow-row {
+  padding: .5rem;
+}
+
+.like-btn-hover {
+  cursor: pointer;
+  filter: brightness(95%);
+}
+
+.btn-in-row {
+  margin: 0.2rem;
+}

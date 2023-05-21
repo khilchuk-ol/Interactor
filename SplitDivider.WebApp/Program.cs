@@ -49,6 +49,12 @@ app.UseSwaggerUi3(settings =>
 
 app.UseRouting();
 
+app.UseCors(x => x
+    .WithOrigins("http://localhost:3000")
+    .AllowCredentials()
+    .AllowAnyHeader()
+    .AllowAnyMethod());
+
 //app.UseIdentityServer();
 
 app.UseAuthentication();
