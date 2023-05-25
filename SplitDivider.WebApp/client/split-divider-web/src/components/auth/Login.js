@@ -12,6 +12,7 @@ import EmailInput from "../utils/inputs/EmailInput.js";
 import PasswordInput from "../utils/inputs/PasswordInput.js";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import TokenService from "../../services/token.service";
 
 function Login(props) {
   const { setUser } = props;
@@ -51,9 +52,9 @@ function Login(props) {
 
     if (passwordState.isValid && emailState.isValid) {
       AuthService.login(emailState.email, passwordState.password).then(
-        resp => {
-          AuthService.saveToCache(resp.data);
-          setUser(resp.data);
+        data => {
+          TokenService.saveToken(data["token"]);
+          setUser(data["user"]);
 
           setFormState(prev => ({
             ...prev,

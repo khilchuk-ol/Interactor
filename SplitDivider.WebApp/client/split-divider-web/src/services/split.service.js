@@ -40,6 +40,56 @@ const getSplits = async (page, state = null) => {
     });
 };
 
+const getSplit = async id => {
+  return requester
+    .get(`/splits/${id}`, {
+      withCredentials: true
+    })
+    .then(resp => {
+      if (resp.status === HttpStatusCode.NotFound) {
+        throw new Error("Split not found");
+      }
+
+      return resp.data;
+    })
+    .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to access this information");
+      }
+
+      if (err.message.includes(HttpStatusCode.Forbidden)) {
+        throw new Error("You don't have access to this information");
+      }
+
+      if (err.message) throw new Error("Something went wrong: " + err.message);
+    });
+};
+
+const getSplitUsers = async id => {
+  return requester
+    .get(`/splits/${id}/users`, {
+      withCredentials: true
+    })
+    .then(resp => {
+      if (resp.status === HttpStatusCode.NotFound) {
+        throw new Error("Information not found");
+      }
+
+      return resp.data;
+    })
+    .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to access this information");
+      }
+
+      if (err.message.includes(HttpStatusCode.Forbidden)) {
+        throw new Error("You don't have access to this information");
+      }
+
+      if (err.message) throw new Error("Something went wrong: " + err.message);
+    });
+};
+
 export const patchStatusName = {
   close: "close",
   activate: "activate",
@@ -69,9 +119,80 @@ const patchStatus = async (id, statusName) => {
     });
 };
 
+const postSplit = async (
+  name,
+  gender,
+  minRegDt,
+  countryIds,
+  actionsWeights
+) => {
+  let createParams = {
+    name: name,
+    gender: gender,
+    minRegDt: minRegDt,
+    countryIds: countryIds,
+    actionsWeights: actionsWeights
+  };
+
+  return requester
+    .post(`/splits`, createParams, {
+      withCredentials: true
+    })
+    .then(resp => resp.data)
+    .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to create split");
+      }
+
+      if (err.message.includes(HttpStatusCode.Forbidden)) {
+        throw new Error("You don't have permissions to create split");
+      }
+
+      if (err.message) throw new Error("Something went wrong: " + err.message);
+    });
+};
+
+const patchSplit = async (
+  id,
+  name,
+  gender,
+  minRegDt,
+  countryIds,
+  actionsWeights
+) => {
+  let params = {
+    name: name,
+    gender: gender,
+    minRegDt: minRegDt,
+    countryIds: countryIds,
+    actionsWeights: actionsWeights
+  };
+
+  return requester
+    .patch(`/splits/${id}`, params, {
+      withCredentials: true
+    })
+    .then(resp => resp.data)
+    .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to create split");
+      }
+
+      if (err.message.includes(HttpStatusCode.Forbidden)) {
+        throw new Error("You don't have permissions to create split");
+      }
+
+      if (err.message) throw new Error("Something went wrong: " + err.message);
+    });
+};
+
 const splitService = {
   getSplits,
-  patchStatus
+  patchStatus,
+  postSplit,
+  getSplit,
+  getSplitUsers,
+  patchSplit
 };
 
 export default splitService;

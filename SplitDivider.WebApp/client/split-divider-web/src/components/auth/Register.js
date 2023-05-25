@@ -13,6 +13,7 @@ import PasswordInput from "../utils/inputs/PasswordInput.js";
 import EmailInput from "../utils/inputs/EmailInput.js";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import TokenService from "../../services/token.service";
 
 function Register(props) {
   const { setUser } = props;
@@ -74,16 +75,15 @@ function Register(props) {
         passwordState.password,
         confirmPasswordState.password
       ).then(
-        res => {
+        data => {
           setFormState(prev => ({
             ...prev,
-            data: res.data,
             message: "Your account has been registered",
             success: true
           }));
 
-          setUser(res["result"]);
-          AuthService.saveToCache(res["result"]);
+          setUser(data["user"]);
+          TokenService.saveToken(data["token"]);
 
           navigate("/");
         },

@@ -22,11 +22,11 @@ export const validEmail = value => {
   }
 };
 
-export const validUsername = value => {
-  if (value.length < 3 || value.length > 20) {
+export const validText = value => {
+  if (value.length < 5 || value.length > 30) {
     return (
       <FormFeedback style={{ display: "block" }}>
-        The username must be between 3 and 20 characters.
+        Length should be between 5 and 30 characters
       </FormFeedback>
     );
   }

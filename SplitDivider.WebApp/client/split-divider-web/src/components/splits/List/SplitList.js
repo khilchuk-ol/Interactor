@@ -16,7 +16,7 @@ import SplitHelper from "../../../services/split.helper";
 function SplitList(props) {
   const { stateFilter } = props;
 
-  const [state, setState] = useState({
+  const [listState, setListState] = useState({
     splits: [],
     totalCount: 0,
     page: 1,
@@ -32,9 +32,9 @@ function SplitList(props) {
   });
 
   useEffect(() => {
-    SplitService.getSplits(state.page, stateFilter)
+    SplitService.getSplits(listState.page, stateFilter)
       .then(res => {
-        setState(prev => ({
+        setListState(prev => ({
           ...prev,
           isInitial: false,
           message: null,
@@ -45,7 +45,7 @@ function SplitList(props) {
         }));
       })
       .catch(err => {
-        setState(prev => ({
+        setListState(prev => ({
           ...prev,
           isInitial: true,
           message: err.message,
@@ -54,17 +54,17 @@ function SplitList(props) {
           splits: null
         }));
       });
-  }, [state.page]);
+  }, [listState.page, stateFilter]);
 
   const setPage = page => {
-    setState(prev => ({
+    setListState(prev => ({
       ...prev,
       page: page
     }));
   };
 
   const closeAlert = () => {
-    setState(prev => ({
+    setListState(prev => ({
       ...prev,
       showMessage: false
     }));
@@ -92,80 +92,93 @@ function SplitList(props) {
 
   return (
     <>
-      <PaginationControl
-        page={state.page}
-        between={4}
-        total={state.totalCount}
-        limit={PAGE_SIZE}
-        changePage={page => {
-          setPage(page);
-        }}
-        ellipsis={1}
-      />
-
-      <div>
-        {state.isLoading && (
-          <span className="spinner-border spinner-border-sm"></span>
-        )}
-        {state.showMessage && (
-          <Alert color="danger" isOpen={state.showMessage} toggle={closeAlert}>
-            {state.message}
-          </Alert>
-        )}
-      </div>
-
-      {state.splits && (
-        <Container className={"mt-auto"}>
-          <Row>
-            <Col
-              className="bg-dark border text-light text-start narrow-row"
-              xs={1}
-            >
-              Split Id
-            </Col>
-            <Col
-              className="bg-dark border text-light text-start narrow-row"
-              xs={5}
-            >
-              Name
-            </Col>
-            <Col
-              className="bg-dark border text-light text-start narrow-row"
-              xs={2}
-            >
-              State
-            </Col>
-            <Col className="text-start narrow-row"></Col>
-          </Row>
-          {state.splits.map(s => {
-            return (
-              <SplitItem
-                item={s}
-                isEditable={SplitHelper.canBeEdited(s.state)}
-                key={`${s.id}`}
-                changeStatus={changeStatus}
-              />
-            );
-          })}
-        </Container>
+      {listState.totalCount === 0 && (
+        <Alert color="primary" isOpen={true} style={{ marginTop: "2rem" }}>
+          No results found
+        </Alert>
       )}
+      {listState.totalCount > 0 && (
+        <>
+          <PaginationControl
+            page={listState.page}
+            between={4}
+            total={listState.totalCount}
+            limit={PAGE_SIZE}
+            changePage={page => {
+              setPage(page);
+            }}
+            ellipsis={1}
+          />
 
-      {!state.splits && !state.isInitial && (
-        <div
-          style={{
-            paddingTop: "1rem"
-          }}
-        >
-          <Alert color="primary" isOpen={true}>
-            No results found
-          </Alert>
-        </div>
+          <div>
+            {listState.isLoading && (
+              <span className="spinner-border spinner-border-sm"></span>
+            )}
+            {listState.showMessage && (
+              <Alert
+                color="danger"
+                isOpen={listState.showMessage}
+                toggle={closeAlert}
+              >
+                {listState.message}
+              </Alert>
+            )}
+          </div>
+
+          {listState.splits && (
+            <Container className={"mt-auto"}>
+              <Row>
+                <Col
+                  className="bg-dark border text-light text-start narrow-row"
+                  xs={1}
+                >
+                  Split Id
+                </Col>
+                <Col
+                  className="bg-dark border text-light text-start narrow-row"
+                  xs={5}
+                >
+                  Name
+                </Col>
+                <Col
+                  className="bg-dark border text-light text-start narrow-row"
+                  xs={2}
+                >
+                  State
+                </Col>
+                <Col className="text-start narrow-row"></Col>
+              </Row>
+              {listState.splits.map(s => {
+                return (
+                  <SplitItem
+                    item={s}
+                    isEditable={SplitHelper.canBeEdited(s.state)}
+                    key={`${s.id}`}
+                    changeStatus={changeStatus}
+                  />
+                );
+              })}
+            </Container>
+          )}
+
+          {!listState.splits && !listState.isInitial && (
+            <div
+              style={{
+                paddingTop: "1rem"
+              }}
+            >
+              <Alert color="primary" isOpen={true}>
+                No results found
+              </Alert>
+            </div>
+          )}
+
+          <Modal isOpen={modal.show} toggle={closeModal}>
+            <ModalHeader toggle={closeModal}>Error occurred</ModalHeader>
+            <ModalBody>{modal.message}</ModalBody>
+          </Modal>
+        </>
       )}
-
-      <Modal isOpen={modal.show} toggle={closeModal}>
-        <ModalHeader toggle={closeModal}>Error occurred</ModalHeader>
-        <ModalBody>{modal.message}</ModalBody>
-      </Modal>
     </>
   );
 }

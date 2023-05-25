@@ -2,13 +2,16 @@ import React from "react";
 import { css } from "@emotion/css";
 
 import EditPencil from "../../images/pencil.svg";
+import PlusSign from "../../images/plus.svg";
 
 export const iconTypes = {
-  editPencil: "EDIT_PENCIL"
+  editPencil: "EDIT_PENCIL",
+  plusSign: "PLUS_SIGN"
 };
 
 const iconSrc = {
-  EDIT_PENCIL: EditPencil
+  EDIT_PENCIL: EditPencil,
+  PLUS_SIGN: PlusSign
 };
 
 const circleStyles = css({

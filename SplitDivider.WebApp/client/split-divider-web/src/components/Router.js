@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import ParticipantsSearch from "./participants/ParticipantSearch";
 import SplitList from "./splits/List/SplitList";
+import SplitListPage from "./splits/List/SplitListPage";
 
 export default function Router(props) {
   const { user, setUser } = props;
@@ -40,7 +41,7 @@ export default function Router(props) {
               path="/participants"
               element={<ParticipantsSearch />}
             />
-            <Route exact path="/splits" element={<SplitList />} />
+            <Route exact path="/splits" element={<SplitListPage />} />
             <Route path="/splits/:id" component={<>Split</>} />
             <Route path="/splits/:id/edit" component={<>Edit Split</>} />
             <Route exact path="/admin" element={<>admin</>} />

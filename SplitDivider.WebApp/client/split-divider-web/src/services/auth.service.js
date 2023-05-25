@@ -4,7 +4,7 @@ import { requester } from "./request";
 const register = async (email, password, confirmPassword) => {
   return requester
     .post(
-      "/auth/signup",
+      "/auth/register",
       {
         email: email,
         password: password,
@@ -36,7 +36,7 @@ const login = async (email, password) => {
         throw new Error("Invalid credentials: 400");
       }
 
-      return resp;
+      return resp.data;
     })
     .catch(err => {
       throw new Error("Something went wrong: " + err.message);
@@ -55,39 +55,25 @@ const logout = async () => {
 const getCurrentUser = async () => {
   return requester
     .get("/auth/me", { withCredentials: true })
-    .then(resp => resp.data)
+    .then(resp => {
+      if (resp.status === HttpStatusCode.Unauthorized) return null;
+
+      return resp.data;
+    })
     .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to access this information");
+      }
+
       throw new Error("Something went wrong: " + err.message);
     });
-};
-
-const getCachedUser = async () => {
-  return new Promise((resolve, reject) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      resolve(user);
-    } else {
-      reject();
-    }
-  });
-};
-
-const clearCache = () => {
-  localStorage.removeItem("user");
-};
-
-const saveToCache = data => {
-  localStorage.setItem("user", JSON.stringify(data));
 };
 
 const authServices = {
   register,
   login,
   logout,
-  getCurrentUser,
-  getCachedUser,
-  clearCache,
-  saveToCache
+  getCurrentUser
 };
 
 export default authServices;

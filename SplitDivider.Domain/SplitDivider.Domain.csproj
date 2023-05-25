@@ -12,6 +12,13 @@
 
     <ItemGroup>
       <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation">
+        <HintPath>..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\7.0.5\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

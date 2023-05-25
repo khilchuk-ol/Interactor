@@ -13,7 +13,7 @@ using SplitDivider.Application.Users.Queries.GetSplitUsers;
 
 namespace SplitDivider.WebApp.Controllers;
 
-[Authorize]
+//[Authorize]
 public class SplitsController : ApiControllerBase
 {
     [HttpGet]

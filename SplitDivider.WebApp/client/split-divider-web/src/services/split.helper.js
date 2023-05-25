@@ -4,12 +4,19 @@ const SplitStatusReadyToTest = 2;
 const SplitStatusSuspended = 3;
 const SplitStatusClosed = 4;
 
-const StateNames = {
+export const StateNames = {
   0: "Created",
   1: "Activated",
   2: "Ready to test",
   3: "Suspended",
   4: "Closed"
+};
+
+export const InteractionTypes = {
+  dialog: "dialog",
+  like: "like",
+  hide: "hide",
+  "video-call": "video-call"
 };
 
 const getStateName = state => {
