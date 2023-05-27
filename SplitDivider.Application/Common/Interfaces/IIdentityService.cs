@@ -14,7 +14,7 @@ public interface IIdentityService
 
     Task<Result> DeleteUserAsync(string userId);
 
-    Task<bool> AddRoleForUser(string userId, string roleId);
+    Task<bool> AddRoleForUser(string userId, string role);
     
-    Task<bool> DeleteRoleForUser(string userId, string roleId);
+    Task<bool> DeleteRoleForUser(string userId, string role);
 }

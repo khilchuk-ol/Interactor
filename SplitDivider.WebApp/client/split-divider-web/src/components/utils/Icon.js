@@ -3,15 +3,18 @@ import { css } from "@emotion/css";
 
 import EditPencil from "../../images/pencil.svg";
 import PlusSign from "../../images/plus.svg";
+import CloseSign from "../../images/close.svg";
 
 export const iconTypes = {
   editPencil: "EDIT_PENCIL",
-  plusSign: "PLUS_SIGN"
+  plusSign: "PLUS_SIGN",
+  closeSign: "CLOSE_SIGN"
 };
 
 const iconSrc = {
   EDIT_PENCIL: EditPencil,
-  PLUS_SIGN: PlusSign
+  PLUS_SIGN: PlusSign,
+  CLOSE_SIGN: CloseSign
 };
 
 const circleStyles = css({
