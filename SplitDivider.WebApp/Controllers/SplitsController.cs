@@ -29,6 +29,22 @@ public class SplitsController : ApiControllerBase
         return await Mediator.Send(new GetSplitQuery(id));
     }
     
+    [HttpGet("{id}/graph")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetGraph(int id)
+    {
+        string filename = $"split{id.ToString()}.graphml";
+
+        var stream = System.IO.File.OpenRead(@"Visualization/" + filename);
+
+        if (stream == null)
+        {
+            return NotFound();
+        }
+
+        return File(stream, "application/octet-stream", filename);
+    }
+    
     [HttpGet("{id}/users")]
     public async Task<IReadOnlyCollection<SplitUserDto>> GetSplitUsers(int id)
     {

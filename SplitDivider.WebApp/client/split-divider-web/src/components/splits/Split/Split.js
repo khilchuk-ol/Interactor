@@ -217,7 +217,16 @@ export default function Split() {
         </Col>
         <Col>
           {SplitHelper.splitHasGroups(split.state) ? (
-            <Graph id={split.id} groups={groupsState} />
+            <Graph
+              id={split.id}
+              groups={groupsState}
+              onError={msg => {
+                setMsgState({
+                  isOpen: true,
+                  msg: msg
+                });
+              }}
+            />
           ) : (
             "Groups are not formed yet"
           )}

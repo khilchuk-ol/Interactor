@@ -65,6 +65,34 @@ const getSplit = async id => {
     });
 };
 
+const getSplitGraph = async id => {
+  return requester
+    .get(`/splits/${id}/graph`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    })
+    .then(resp => {
+      if (resp.status === HttpStatusCode.NotFound) {
+        throw new Error("Split not found");
+      }
+
+      return resp.data;
+    })
+    .catch(err => {
+      if (err.message.includes(HttpStatusCode.Unauthorized)) {
+        throw new Error("You have to authorize to access this information");
+      }
+
+      if (err.message.includes(HttpStatusCode.Forbidden)) {
+        throw new Error("You don't have access to this information");
+      }
+
+      if (err.message) throw new Error("Something went wrong: " + err.message);
+    });
+};
+
 const getSplitUsers = async id => {
   return requester
     .get(`/splits/${id}/users`, {
@@ -192,6 +220,7 @@ const splitService = {
   postSplit,
   getSplit,
   getSplitUsers,
+  getSplitGraph,
   patchSplit
 };
 
