@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, ButtonGroup, Label } from "reactstrap";
-import { GENDERS_MAP } from "../../../../services/gender.helper";
+import { GENDERS_MAP } from "../../../services/gender.helper";
 
 export default function GenderInput(props) {
   const { state, setState } = props;

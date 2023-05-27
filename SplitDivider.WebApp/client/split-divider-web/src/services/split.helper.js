@@ -35,6 +35,10 @@ const canBeSuspended = state => {
   return state === SplitStatusActivated || state === SplitStatusReadyToTest;
 };
 
+const splitHasGroups = state => {
+  return state === SplitStatusReadyToTest || state === SplitStatusClosed;
+};
+
 const canBeClosed = state => {
   return (
     state === SplitStatusCreated ||
@@ -48,7 +52,8 @@ const helper = {
   canBeEdited,
   canBeActivated,
   canBeSuspended,
-  canBeClosed
+  canBeClosed,
+  splitHasGroups
 };
 
 export default helper;

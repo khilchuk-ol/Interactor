@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Row } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import SplitHelper from "../../../services/split.helper";
-import Icon, { iconTypes } from "../../utils/Icon";
-import { patchStatusName } from "../../../services/split.service";
+import ButtonsGroup from "../inputs/ButtonsGroup";
 
 function SplitItem(props) {
-  const { item, isEditable, changeStatus } = props;
+  const { item, changeStatus, onUpdate } = props;
 
   const navigate = useNavigate();
 
@@ -15,8 +14,8 @@ function SplitItem(props) {
     navigate(`/splits/${item.id}`);
   };
 
-  const navigateToEdit = () => {
-    navigate(`/splits/${item.id}/edit`);
+  const onEditSplit = e => {
+    onUpdate(e);
   };
 
   const originalStyle = "bg-light text-secondary border text-start";
@@ -61,46 +60,12 @@ function SplitItem(props) {
           {SplitHelper.getStateName(item.state)}
         </Col>
         <Col className="text-secondary text-start">
-          <Button
-            className={"bg-light border btn-in-row"}
-            onClick={navigateToEdit}
-            disabled={!isEditable}
-          >
-            <Icon type={iconTypes.editPencil} />
-          </Button>
-          {SplitHelper.canBeActivated(item.state) && (
-            <Button
-              color={"success"}
-              className={"btn-in-row"}
-              onClick={() => {
-                changeStatus(item.id, patchStatusName.activate);
-              }}
-            >
-              Activate
-            </Button>
-          )}
-          {SplitHelper.canBeSuspended(item.state) && (
-            <Button
-              color={"primary"}
-              className={"btn-in-row"}
-              onClick={() => {
-                changeStatus(item.id, patchStatusName.suspend);
-              }}
-            >
-              Suspend
-            </Button>
-          )}
-          {SplitHelper.canBeClosed(item.state) && (
-            <Button
-              color={"warning"}
-              className={"btn-in-row"}
-              onClick={() => {
-                changeStatus(item.id, patchStatusName.close);
-              }}
-            >
-              Close
-            </Button>
-          )}
+          <ButtonsGroup
+            state={item.state}
+            id={item.id}
+            changeStatus={changeStatus}
+            onEditSplit={onEditSplit}
+          />
         </Col>
       </Row>
     </>

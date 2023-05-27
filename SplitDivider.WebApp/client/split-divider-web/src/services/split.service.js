@@ -98,7 +98,7 @@ export const patchStatusName = {
 
 const patchStatus = async (id, statusName) => {
   return requester
-    .patch(`/split/${id}/${statusName}`, { withCredentials: true })
+    .patch(`/splits/${id}/${statusName}`, { withCredentials: true })
     .then(resp => {
       if (resp.status !== HttpStatusCode.Ok) {
         throw new Error(`Could not ${statusName} split`);

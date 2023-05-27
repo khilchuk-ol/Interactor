@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, ButtonGroup, Label } from "reactstrap";
-import { COUNTRIES_MAP } from "../../../../services/geo.helper";
+import { COUNTRIES_MAP } from "../../../services/geo.helper";
 
 export default function CountryIdsInput(props) {
   const { state, setState } = props;

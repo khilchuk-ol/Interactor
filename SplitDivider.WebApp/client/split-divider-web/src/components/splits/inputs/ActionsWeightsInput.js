@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
 export default function ActionsWeightsTableInput(props) {
-  const { state, setState, onChangeInput } = props;
+  const { state, onChangeInput } = props;
 
   return (
     <div style={{ paddingTop: "1.5rem" }}>

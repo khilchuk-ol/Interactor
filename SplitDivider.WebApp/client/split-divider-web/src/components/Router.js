@@ -10,6 +10,7 @@ import ErrorPage from "./pages/ErrorPage";
 import ParticipantsSearch from "./participants/ParticipantSearch";
 import SplitList from "./splits/List/SplitList";
 import SplitListPage from "./splits/List/SplitListPage";
+import Split from "./splits/Split/Split";
 
 export default function Router(props) {
   const { user, setUser } = props;
@@ -42,8 +43,7 @@ export default function Router(props) {
               element={<ParticipantsSearch />}
             />
             <Route exact path="/splits" element={<SplitListPage />} />
-            <Route path="/splits/:id" component={<>Split</>} />
-            <Route path="/splits/:id/edit" component={<>Edit Split</>} />
+            <Route path="/splits/:id" element={<Split />} />
             <Route exact path="/admin" element={<>admin</>} />
           </>
         )}

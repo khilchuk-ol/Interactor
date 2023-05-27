@@ -73,7 +73,7 @@ public class GraphBuilder : IGraphBuilder
                     intCost = (int)(cost * 10);
                 }
 
-                var edge = new WeightedEdge<int, int>(userId, contactId, intCost);
+                var edge = new WeightedEdge<int, int>(userId, contactId, intCost / 100);
                 qGraph.AddVerticesAndEdge(edge);
                 
                 graph.AddEdge(userId, new Algorithms.Edge<int>

@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import SplitItem from "./SplitItem";
 import SplitHelper from "../../../services/split.helper";
+import UpdateSplitModal from "../Update/UpdateSplitModal";
 
 function SplitList(props) {
   const { stateFilter } = props;
@@ -90,6 +91,25 @@ function SplitList(props) {
     });
   };
 
+  const [editModalState, setEditModalState] = useState({
+    isOpen: false,
+    id: 1
+  });
+
+  const toggleEditModal = () => {
+    setEditModalState(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+  };
+
+  const onUpdate = id => {
+    setEditModalState({
+      id: id,
+      isOpen: true
+    });
+  };
+
   return (
     <>
       {listState.totalCount === 0 && (
@@ -152,7 +172,9 @@ function SplitList(props) {
                 return (
                   <SplitItem
                     item={s}
-                    isEditable={SplitHelper.canBeEdited(s.state)}
+                    onUpdate={e => {
+                      onUpdate(s.id);
+                    }}
                     key={`${s.id}`}
                     changeStatus={changeStatus}
                   />
@@ -172,6 +194,12 @@ function SplitList(props) {
               </Alert>
             </div>
           )}
+
+          <UpdateSplitModal
+            id={editModalState.id}
+            isOpen={editModalState.isOpen}
+            toggle={toggleEditModal}
+          />
 
           <Modal isOpen={modal.show} toggle={closeModal}>
             <ModalHeader toggle={closeModal}>Error occurred</ModalHeader>

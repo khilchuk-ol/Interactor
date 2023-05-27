@@ -1,22 +1,24 @@
 import React, { useState } from "react";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import SplitService from "../../../services/split.service";
-import { validText } from "../../utils/ValidationFeedback";
-import NameInput from "../inputs/NameInput";
-import ActionsWeightsTableInput from "../inputs/ActionsWeightsInput";
-import { InteractionTypes } from "../../../services/split.helper";
-import CountryIdsInput from "../inputs/CountryIdsInput";
 import { ALL_GENDERS } from "../../../services/gender.helper";
+import SplitService from "../../../services/split.service";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import NameInput from "../inputs/NameInput";
+import { validText } from "../../utils/ValidationFeedback";
+import ActionsWeightsTableInput from "../inputs/ActionsWeightsInput";
+import CountryIdsInput from "../inputs/CountryIdsInput";
 import GenderInput from "../inputs/GenderInput";
 import MinRegDtInput from "../inputs/MinRegDtInput";
+import splitService from "../../../services/split.service";
+import { useEffect } from "react";
+import { prepareDatetime } from "../../../services/datetime.helper";
 
-export default function CreateSplitModal(props) {
+export default function UpdateSplitModal(props) {
   const [msgState, setMsgState] = useState({
     show: false,
     message: null
   });
 
-  const { isOpen, toggle } = props;
+  const { isOpen, id, toggle } = props;
 
   const [nameState, setNameState] = useState({
     value: "",
@@ -24,20 +26,7 @@ export default function CreateSplitModal(props) {
     feedback: null
   });
 
-  let initialActionsWeightsData = [];
-  let i = 0;
-
-  Object.keys(InteractionTypes).forEach(k => {
-    initialActionsWeightsData.push({
-      id: i++,
-      name: InteractionTypes[k],
-      value: 1
-    });
-  });
-
-  const [actionsWeightsState, setActionsWeightsState] = useState(
-    initialActionsWeightsData
-  );
+  const [actionsWeightsState, setActionsWeightsState] = useState([]);
 
   const onChangeInput = e => {
     e.preventDefault();
@@ -68,7 +57,32 @@ export default function CreateSplitModal(props) {
 
   const [minRegDtState, setMinRegDtState] = useState(new Date());
 
-  const createSplit = e => {
+  useEffect(() => {
+    splitService.getSplit(id).then(data => {
+      setNameState({
+        value: data.name,
+        isValid: true,
+        feedback: null
+      });
+      setCountryIdsState(data.countryIds.map(id => id + ""));
+      setGenderState(data.gender ? data.gender : ALL_GENDERS);
+
+      setMinRegDtState(
+        data.minRegDt ? prepareDatetime(data.minRegDt) : undefined
+      );
+
+      let i = 0;
+      let actionsWeights = Object.keys(data.actionsWeights).map(awk => ({
+        id: i++,
+        name: awk,
+        value: data.actionsWeights[awk]
+      }));
+
+      setActionsWeightsState(actionsWeights);
+    });
+  }, [id]);
+
+  const updateSplit = e => {
     e.preventDefault();
 
     if (!nameState.value || !nameState.isValid) {
@@ -85,7 +99,8 @@ export default function CreateSplitModal(props) {
       actionsWeight[v.name] = v.value;
     });
 
-    SplitService.postSplit(
+    SplitService.patchSplit(
+      id,
       nameState.value,
       genderState === ALL_GENDERS ? null : genderState,
       minRegDtState,
@@ -113,7 +128,7 @@ export default function CreateSplitModal(props) {
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle} fullscreen>
-        <ModalHeader>Create new split</ModalHeader>
+        <ModalHeader>Update split ID={id}</ModalHeader>
         <ModalBody style={{ width: "30%" }} className={"mx-auto"}>
           <NameInput
             state={nameState}
@@ -133,7 +148,7 @@ export default function CreateSplitModal(props) {
           <MinRegDtInput state={minRegDtState} setState={setMinRegDtState} />
         </ModalBody>
         <ModalFooter>
-          <Button color="success" onClick={createSplit}>
+          <Button color="success" onClick={updateSplit}>
             Submit
           </Button>{" "}
           <Button color="secondary" onClick={toggle}>

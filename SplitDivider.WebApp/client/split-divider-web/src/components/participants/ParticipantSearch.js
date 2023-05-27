@@ -58,6 +58,10 @@ export default function ParticipantsSearch(props) {
     }));
   };
 
+  const mapGroupToName = group => {
+    return group === 0 ? "Control" : "Test";
+  };
+
   return (
     <>
       <div>
@@ -92,7 +96,7 @@ export default function ParticipantsSearch(props) {
               <Row>
                 <Col className="bg-light border text-start">{p.splitId}</Col>
                 <Col className="bg-light border align-content-end text-start">
-                  {p.group}
+                  {mapGroupToName(p.group)} ({p.group})
                 </Col>
               </Row>
             ))
