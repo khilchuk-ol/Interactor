@@ -17,6 +17,8 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
 
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var entity = await _context.AppUsers
             .FindAsync(request.Id, cancellationToken)
             .ConfigureAwait(true);

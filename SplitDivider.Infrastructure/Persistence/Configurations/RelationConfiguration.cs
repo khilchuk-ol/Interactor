@@ -7,6 +7,8 @@ public class RelationConfiguration : IEntityTypeConfiguration<Relation>
 {
     public void Configure(EntityTypeBuilder<Relation> builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.Property(r => r.Dt)
             .HasColumnType("timestamp")
             .IsRequired();

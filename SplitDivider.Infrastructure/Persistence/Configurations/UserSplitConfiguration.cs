@@ -7,6 +7,8 @@ public class UserSplitConfiguration : IEntityTypeConfiguration<UserSplit>
 {
     public void Configure(EntityTypeBuilder<UserSplit> builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.HasKey(us => new { us.UserId, us.SplitId });
         
         builder.Property(us => us.Group)

@@ -28,6 +28,8 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
 
     public MinCut ComputeMinCut(Graph<TVertex, int> g) 
     {
+        if (g == null) throw new ArgumentNullException(nameof(g));
+        
         if(g.VerticesCount < 2)
         {
             throw new ArgumentException("Graph must have at least two vertices");
@@ -68,8 +70,10 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return ConstructMinCutResult(originalGraph, currentBestPartition);
     }
 
-    private MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int>? partition) 
+    private MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int> partition) 
     {
+        if (originalGraph == null) throw new ArgumentNullException(nameof(originalGraph));
+        
         if (partition == null)
         {
             throw new Exception("partition is null");
@@ -135,6 +139,9 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
 
     Graph<TVertex, int> MergeVerticesFromCut(Graph<TVertex, int> g, CutOfThePhase cutOfThePhase) 
     {
+        if (g == null) throw new ArgumentNullException(nameof(g));
+        if (cutOfThePhase == null) throw new ArgumentNullException(nameof(cutOfThePhase));
+
         var toReturn = new Graph<TVertex, int>();
 
         foreach (var v in g.GetVerticesIds()) 
@@ -223,8 +230,10 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return toReturn;
     }
 
-    private CutOfThePhase MaximumAdjacencySearch(Graph<TVertex, int> g) 
+    private CutOfThePhase MaximumAdjacencySearch(Graph<TVertex, int> g)
     {
+        if (g == null) throw new ArgumentNullException(nameof(g));
+        
         return MaximumAdjacencySearch(g, null);
     }
 

@@ -7,6 +7,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.Metadata.SetTableName("Users");
         
         builder.Property(u => u.Id)

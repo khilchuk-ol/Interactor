@@ -34,6 +34,8 @@ public class UpdateSplitCommandHandler : IRequestHandler<UpdateSplitCommand>
 
     public async Task Handle(UpdateSplitCommand request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var entity = await _context.Splits
             .FindAsync(request.Id, cancellationToken)
             .ConfigureAwait(true);

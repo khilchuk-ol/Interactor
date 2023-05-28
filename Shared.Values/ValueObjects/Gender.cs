@@ -27,6 +27,8 @@ public sealed class Gender : ValueObjectWithName
     
     public static implicit operator string(Gender gender)
     {
+        if (gender == null) throw new ArgumentNullException(nameof(gender));
+        
         return gender.ToString();
     }
 
@@ -35,9 +37,9 @@ public sealed class Gender : ValueObjectWithName
         return From(name);
     }
     
-    public static Gender Male = new("male");
+    public static readonly Gender Male = new("male");
 
-    public static Gender Female = new("female");
+    public static readonly Gender Female = new("female");
     
     private static IEnumerable<Gender> SupportedGenders
     {

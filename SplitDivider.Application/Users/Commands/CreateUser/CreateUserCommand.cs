@@ -27,6 +27,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
 
     public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var entity = new User
         {
             Id = request.Id,

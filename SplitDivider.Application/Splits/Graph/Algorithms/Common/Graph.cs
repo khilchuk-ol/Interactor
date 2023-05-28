@@ -44,8 +44,10 @@ public class Graph<TVertex, TEdge> where TVertex : IComparable<TVertex> where TE
         return _verticesIds.Keys.ToList();
     }
     
-    public void AddVertex(Vertex<TVertex> vertex, params Edge<TEdge>[] adjacents) 
+    public void AddVertex(Vertex<TVertex> vertex, params Edge<TEdge>[] adjacents)
     {
+        if (vertex == null) throw new ArgumentNullException(nameof(vertex));
+        
         foreach (var edge in adjacents)
         {
             AddVertex(vertex, edge);
@@ -60,12 +62,17 @@ public class Graph<TVertex, TEdge> where TVertex : IComparable<TVertex> where TE
 
     public void AddVertex(Vertex<TVertex> vertex, Edge<TEdge> adjacent) 
     {
+        if (vertex == null) throw new ArgumentNullException(nameof(vertex));
+        if (adjacent == null) throw new ArgumentNullException(nameof(adjacent));
+        
         AddVertex(vertex);
         AddEdge(vertex.Id, adjacent);
     }
 
     public void AddEdge(int vertexId, Edge<TEdge> edge) 
     {
+        if (edge == null) throw new ArgumentNullException(nameof(edge));
+        
         if (!_adjacentEdges.ContainsKey(vertexId))
         {
             _adjacentEdges[vertexId] = new() { edge };

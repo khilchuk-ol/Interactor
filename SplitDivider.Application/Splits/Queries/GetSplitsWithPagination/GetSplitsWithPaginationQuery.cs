@@ -27,6 +27,8 @@ public class GetSplitsWithPaginationQueryHandler : IRequestHandler<GetSplitsWith
 
     public async Task<PaginatedList<SplitBriefDto>> Handle(GetSplitsWithPaginationQuery request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var res = _context.Splits.AsQueryable();
 
         if (request.State.HasValue)

@@ -23,6 +23,8 @@ public class CreateRelationCommandHanler : IRequestHandler<CreateRelationCommand
     
     public async Task Handle(CreateRelationCommand request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var entity = new Relation
         {
             UserId = request.UserId,

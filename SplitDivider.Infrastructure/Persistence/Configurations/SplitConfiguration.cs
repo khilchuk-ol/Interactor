@@ -11,6 +11,8 @@ public class SplitConfiguration : IEntityTypeConfiguration<Split>
 {
     public void Configure(EntityTypeBuilder<Split> builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.Property(s => s.Name)
             .HasMaxLength(30)
             .IsRequired();

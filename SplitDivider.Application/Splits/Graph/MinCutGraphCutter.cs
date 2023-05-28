@@ -8,6 +8,8 @@ public class MinCutGraphCutter : IGraphCutter
 {
     public (List<int> first, List<int> second) CutSplitGraph(SplitGraphDto graphDto)
     {
+        if (graphDto == null) throw new ArgumentNullException(nameof(graphDto));
+        
         var minCut = new StoerWagnerMinCut<int>();
 
         var cut = minCut.ComputeMinCut(graphDto.Graph);

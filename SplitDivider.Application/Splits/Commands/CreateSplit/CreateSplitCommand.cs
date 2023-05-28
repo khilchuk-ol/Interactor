@@ -30,6 +30,8 @@ public class CreateSplitCommandHandler : IRequestHandler<CreateSplitCommand, int
 
     public async Task<int> Handle(CreateSplitCommand request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var entity = new Split
         {
             Name = request.Name,

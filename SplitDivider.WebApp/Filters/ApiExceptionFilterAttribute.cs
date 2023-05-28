@@ -49,7 +49,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 
         var details = new ValidationProblemDetails(exception.Errors)
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            Type = ""
         };
 
         context.Result = new BadRequestObjectResult(details);
@@ -61,7 +61,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
         var details = new ValidationProblemDetails(context.ModelState)
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            Type = ""
         };
 
         context.Result = new BadRequestObjectResult(details);
@@ -75,7 +75,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 
         var details = new ProblemDetails()
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "The specified resource was not found.",
             Detail = exception.Message
         };
@@ -91,7 +90,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             Status = StatusCodes.Status401Unauthorized,
             Title = "Unauthorized",
-            Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
         };
 
         context.Result = new ObjectResult(details)
@@ -108,7 +106,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             Status = StatusCodes.Status403Forbidden,
             Title = "Forbidden",
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
         };
 
         context.Result = new ObjectResult(details)

@@ -21,6 +21,8 @@ public class GetSplitUsersQueryHandler : IRequestHandler<GetSplitUsersQuery, IRe
 
     public async Task<IReadOnlyCollection<SplitUserDto>> Handle(GetSplitUsersQuery request, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         return await _context.UserSplits
             .Where(us => us.SplitId == request.Id)
             .OrderByDescending(us => us.SplitId)

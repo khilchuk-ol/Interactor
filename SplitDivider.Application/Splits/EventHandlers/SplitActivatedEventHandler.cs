@@ -33,6 +33,8 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
     
     public async Task Handle(SplitActivatedEvent notification, CancellationToken cancellationToken)
     {
+        if (notification == null) throw new ArgumentNullException(nameof(notification));
+        
         _logger.LogInformation("Split activated: Id={Id}", notification.Split.Id);
 
         var split = notification.Split;

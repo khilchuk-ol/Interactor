@@ -22,6 +22,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
         
         if (authorizeAttributes.Any())
@@ -29,7 +31,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             // Must be authenticated user
             if (_currentUserService.UserId == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException("You have to authorize for this operation");
             }
         
             // Role-based authorization
@@ -55,7 +57,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
                 // Must be a member of at least one role in roles
                 if (!authorized)
                 {
-                    throw new ForbiddenAccessException();
+                    throw new ForbiddenAccessException("You don't have permissions for this operation");
                 }
             }
         
@@ -69,7 +71,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         
                     if (!authorized)
                     {
-                        throw new ForbiddenAccessException();
+                        throw new ForbiddenAccessException("You don't have permissions for this operation");
                     }
                 }
             }

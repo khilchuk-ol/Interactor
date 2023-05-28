@@ -31,7 +31,7 @@ public class AuthService
     {
         var signedUser = await _userManager.FindByEmailAsync(email).ConfigureAwait(true);
 
-        if (signedUser == null) throw new UnauthorizedAccessException();
+        if (signedUser == null) throw new UnauthorizedAccessException("Could not authorize user. Incorrect email");
         
         var result = await _signInManager.PasswordSignInAsync(
             signedUser.UserName, 
@@ -40,7 +40,7 @@ public class AuthService
             false)
             .ConfigureAwait(true);
 
-        if (!result.Succeeded) throw new UnauthorizedAccessException();
+        if (!result.Succeeded) throw new UnauthorizedAccessException("Could not authorize user. Incorrect password");
         
         string accessToken = await _jwtFactory
             .GenerateAccessToken(signedUser.Id, signedUser.UserName, signedUser.Email)

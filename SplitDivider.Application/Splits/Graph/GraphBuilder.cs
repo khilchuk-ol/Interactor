@@ -21,6 +21,9 @@ public class GraphBuilder : IGraphBuilder
 
     public SplitGraphDto BuildGraph(Split split, List<int> userIds)
     {
+        if (split == null) throw new ArgumentNullException(nameof(split));
+        if (userIds == null) throw new ArgumentNullException(nameof(userIds));
+
         var qGraph = new UndirectedGraph<int, WeightedEdge<int, int>>();
         
         var graph = new Algorithms.Common.Graph<int, int>();
@@ -101,6 +104,8 @@ public class GraphBuilder : IGraphBuilder
 
     private void SaveGraph(int splitId, UndirectedGraph<int, WeightedEdge<int, int>> graph)
     {
+        if (graph == null) throw new ArgumentNullException(nameof(graph));
+        
         var filename = $"split{splitId}.graphml";
         var fi = new FileInfo(@"Visualization/" + filename);
 

@@ -27,6 +27,8 @@ public sealed class InteractionType : ValueObjectWithName
     
     public static implicit operator string(InteractionType interactionType)
     {
+        if (interactionType == null) throw new ArgumentNullException(nameof(interactionType));
+        
         return interactionType.ToString();
     }
 
@@ -35,13 +37,13 @@ public sealed class InteractionType : ValueObjectWithName
         return From(name);
     }
 
-    public static InteractionType Dialog = new("dialog");
+    public static readonly InteractionType Dialog = new("dialog");
     
-    public static InteractionType Like = new("like");
+    public static readonly InteractionType Like = new("like");
     
-    public static InteractionType Hide = new("hide");
+    public static readonly InteractionType Hide = new("hide");
 
-    public static InteractionType VideoCall = new("video-call");
+    public static readonly InteractionType VideoCall = new("video-call");
     
     public static IEnumerable<InteractionType> SupportedActions
     {

@@ -55,7 +55,7 @@ public class AuthController : ApiControllerBase
     {
         if (!Request.Headers.ContainsKey("x-auth-token"))
         {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("Could not authorize user. Token does not exist");
         }
 
         var token = Request.Headers["x-auth-token"].ToString();

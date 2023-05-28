@@ -37,6 +37,8 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
@@ -44,6 +46,8 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
+        
         optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 
