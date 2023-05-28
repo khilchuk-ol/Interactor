@@ -25,7 +25,7 @@ public class GetSplitsWithPaginationQueryHandler : IRequestHandler<GetSplitsWith
         _mapper = mapper;
     }
 
-    public async Task<PaginatedList<SplitBriefDto>> Handle(GetSplitsWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<SplitBriefDto>> Handle(GetSplitsWithPaginationQuery request, CancellationToken _)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
         

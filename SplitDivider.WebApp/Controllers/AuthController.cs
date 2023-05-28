@@ -34,6 +34,8 @@ public class AuthController : ApiControllerBase
     [HttpPost("login")]
     public async Task<AuthUserDTO?> Login(LoginModel model)
     {
+        if (model == null) throw new ArgumentNullException(nameof(model));
+        
         if (ModelState.IsValid)
         {
             var dto = await _authService.Authorize(model.Email, model.Password, model.RememberMe).ConfigureAwait(true);
@@ -68,6 +70,8 @@ public class AuthController : ApiControllerBase
     [HttpPost("signup")]
     public async Task<AuthUserDTO?> TestRegister(RegistrationModel model)
     {
+        if (model == null) throw new ArgumentNullException(nameof(model));
+        
         if(ModelState.IsValid)
         {
             var user = new ApplicationUser { Email = model.Email, UserName = model.Email };

@@ -56,6 +56,8 @@ public class Graph<TVertex, TEdge> where TVertex : IComparable<TVertex> where TE
 
     public void AddVertex(Vertex<TVertex> vertex) 
     {
+        if (vertex == null) throw new ArgumentNullException(nameof(vertex));
+        
         Vertices.Add(vertex);
         _verticesIds[vertex.Id] = vertex;
     }

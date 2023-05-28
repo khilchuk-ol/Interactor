@@ -13,7 +13,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         _logger = logger;
     }
 
-    public async Task Process(TRequest request, CancellationToken cancellationToken)
+    public async Task Process(TRequest request, CancellationToken _)
     {
         var requestName = typeof(TRequest).Name;
 

@@ -102,7 +102,7 @@ public class GraphBuilder : IGraphBuilder
         };
     }
 
-    private void SaveGraph(int splitId, UndirectedGraph<int, WeightedEdge<int, int>> graph)
+    private static void SaveGraph(int splitId, UndirectedGraph<int, WeightedEdge<int, int>> graph)
     {
         if (graph == null) throw new ArgumentNullException(nameof(graph));
         

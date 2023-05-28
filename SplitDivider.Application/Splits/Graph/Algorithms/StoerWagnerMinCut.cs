@@ -70,13 +70,13 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return ConstructMinCutResult(originalGraph, currentBestPartition);
     }
 
-    private MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int> partition) 
+    private static MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int> partition) 
     {
         if (originalGraph == null) throw new ArgumentNullException(nameof(originalGraph));
         
         if (partition == null)
         {
-            throw new Exception("partition is null");
+            throw new NullReferenceException("partition is null");
         }
         
         var first = new Graph<TVertex, int>();
@@ -137,7 +137,7 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return new MinCut(first, second, cutWeight);
     }
 
-    Graph<TVertex, int> MergeVerticesFromCut(Graph<TVertex, int> g, CutOfThePhase cutOfThePhase) 
+    static Graph<TVertex, int> MergeVerticesFromCut(Graph<TVertex, int> g, CutOfThePhase cutOfThePhase) 
     {
         if (g == null) throw new ArgumentNullException(nameof(g));
         if (cutOfThePhase == null) throw new ArgumentNullException(nameof(cutOfThePhase));
@@ -237,7 +237,7 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
         return MaximumAdjacencySearch(g, null);
     }
 
-    CutOfThePhase MaximumAdjacencySearch(Graph<TVertex, int> g, int? start)
+    static CutOfThePhase MaximumAdjacencySearch(Graph<TVertex, int> g, int? start)
     {
         if (start == null) start = g.GetVerticesIds().First();
 

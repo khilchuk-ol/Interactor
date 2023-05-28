@@ -8,6 +8,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.Property(u => u.RegistrationDt)
             .ValueGeneratedOnAdd()
             .IsRequired();

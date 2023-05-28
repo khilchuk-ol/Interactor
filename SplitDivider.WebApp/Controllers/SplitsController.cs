@@ -31,16 +31,11 @@ public class SplitsController : ApiControllerBase
     
     [HttpGet("{id}/graph")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> GetGraph(int id)
+    public IActionResult GetGraph(int id)
     {
         string filename = $"split{id.ToString()}.graphml";
 
         var stream = System.IO.File.OpenRead(@"Visualization/" + filename);
-
-        if (stream == null)
-        {
-            return NotFound();
-        }
 
         return File(stream, "application/octet-stream", filename);
     }

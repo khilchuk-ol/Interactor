@@ -20,10 +20,11 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         _identityService = identityService;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken _)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
-        
+        if (next == null) throw new ArgumentNullException(nameof(next));
+
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
         
         if (authorizeAttributes.Any())

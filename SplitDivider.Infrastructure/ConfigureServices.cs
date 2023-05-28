@@ -121,63 +121,65 @@ public static class ConfigureServices
     }
     
     public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+    {
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+        
+        var secretKey = configuration["SecretJWTKey"]; // get value from system environment
+        var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+        var validFor = Convert.ToInt64(configuration["ExpireTokenTimeInMin"]);
+
+        // Get options from app settings
+        var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
+
+        // Configure JwtIssuerOptions
+        services.Configure<JwtIssuerOptions>(options =>
         {
-            var secretKey = configuration["SecretJWTKey"]; // get value from system environment
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-            var validFor = Convert.ToInt64(configuration["ExpireTokenTimeInMin"]);
+            options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+            options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+            options.ValidForInMin = TimeSpan.FromMinutes(validFor);
+            options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+        });
 
-            // Get options from app settings
-            var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
-            // Configure JwtIssuerOptions
-            services.Configure<JwtIssuerOptions>(options =>
+            ValidateAudience = true,
+            ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = signingKey,
+
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+        }).AddJwtBearer(configureOptions =>
+        {
+            configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+            configureOptions.TokenValidationParameters = tokenValidationParameters;
+            configureOptions.SaveToken = true;
+
+            configureOptions.Events = new JwtBearerEvents
             {
-                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                options.ValidForInMin = TimeSpan.FromMinutes(validFor);
-                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-            });
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
-
-                ValidateAudience = true,
-                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
-
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-
-                RequireExpirationTime = true,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(configureOptions =>
-            {
-                configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                configureOptions.TokenValidationParameters = tokenValidationParameters;
-                configureOptions.SaveToken = true;
-
-                configureOptions.Events = new JwtBearerEvents
+                OnAuthenticationFailed = context =>
                 {
-                    OnAuthenticationFailed = context =>
+                    if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
-
-                        return Task.CompletedTask;
+                        context.Response.Headers.Add("Token-Expired", "true");
                     }
-                };
-            });
 
-        }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+    }
 }

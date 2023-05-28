@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);

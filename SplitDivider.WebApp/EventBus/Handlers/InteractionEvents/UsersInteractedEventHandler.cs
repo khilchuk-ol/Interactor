@@ -24,7 +24,7 @@ public class UsersInteractedEventHandler : IEventBusEventHandler
         
         if (mediator == null)
         {
-            throw new Exception("mediator is not found");
+            throw new NullReferenceException("mediator is not found");
         }
 
         await mediator.Send(new CreateRelationCommand
