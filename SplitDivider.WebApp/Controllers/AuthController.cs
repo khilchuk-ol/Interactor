@@ -68,7 +68,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("signup")]
-    public async Task<AuthUserDTO?> TestRegister(RegistrationModel model)
+    public async Task<AuthUserDTO?> Register(RegistrationModel model)
     {
         if (model == null) throw new ArgumentNullException(nameof(model));
         
@@ -81,7 +81,7 @@ public class AuthController : ApiControllerBase
 
             if (!result.Succeeded)
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException("Could not register user");
             }
             
             var dto = await _authService.Authorize(model.Email, model.Password, true).ConfigureAwait(true);

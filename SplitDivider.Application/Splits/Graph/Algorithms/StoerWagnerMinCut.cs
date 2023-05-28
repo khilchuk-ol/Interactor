@@ -226,7 +226,6 @@ public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
             }
         }
 
-
         return toReturn;
     }
 
