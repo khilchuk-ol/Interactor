@@ -45,6 +45,10 @@ export default function CreateSplitModal(props) {
     let { value, id } = e.target;
 
     value = parseInt(value);
+
+    if (value < 1) value = 1;
+    if (value > 30) value = 30;
+
     id = parseInt(id);
 
     setActionsWeightsState(prev => {
