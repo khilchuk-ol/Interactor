@@ -22,18 +22,18 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task SendRandomUserRegistered()
     {
-        await _userSvc.RegisterRandomUser();
+        await _userSvc.RegisterRandomUser().ConfigureAwait(true);
     }
     
     [HttpPost("ban")]
     public async Task SendRandomUserBanned()
     {
-        await _userSvc.BanRandomUser();
+        await _userSvc.BanRandomUser().ConfigureAwait(true);
     }
     
     [HttpPost("interacted")]
     public async Task SendRandomUsersInteracted()
     {
-        await _interactionSvc.HandleRandomUsersInteracted();
+        await _interactionSvc.HandleRandomUsersInteracted().ConfigureAwait(true);
     }
 }

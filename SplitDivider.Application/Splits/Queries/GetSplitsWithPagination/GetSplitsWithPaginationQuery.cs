@@ -36,6 +36,7 @@ public class GetSplitsWithPaginationQueryHandler : IRequestHandler<GetSplitsWith
         
         return await res.OrderByDescending(s => s.Id)
             .ProjectTo<SplitBriefDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize);
+            .PaginatedListAsync(request.PageNumber, request.PageSize)
+            .ConfigureAwait(true);
     }
 }

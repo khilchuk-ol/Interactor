@@ -36,7 +36,7 @@ public class AuthController : ApiControllerBase
     {
         if (ModelState.IsValid)
         {
-            var dto = await _authService.Authorize(model.Email, model.Password, model.RememberMe);
+            var dto = await _authService.Authorize(model.Email, model.Password, model.RememberMe).ConfigureAwait(true);
 
             return dto;
         }
@@ -47,7 +47,7 @@ public class AuthController : ApiControllerBase
     [HttpPost("signout")]
     public async Task Logout()
     {
-        await _signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync().ConfigureAwait(true);
     }
 
     [HttpGet("me")]
@@ -62,7 +62,7 @@ public class AuthController : ApiControllerBase
         
         var userId = _jwtFactory.GetValueFromToken(token);
 
-        return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId).ConfigureAwait(true);
     }
 
     [HttpPost("signup")]
@@ -72,7 +72,7 @@ public class AuthController : ApiControllerBase
         {
             var user = new ApplicationUser { Email = model.Email, UserName = model.Email };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(true);
 
 
             if (!result.Succeeded)
@@ -80,7 +80,7 @@ public class AuthController : ApiControllerBase
                 throw new UnauthorizedAccessException();
             }
             
-            var dto = await _authService.Authorize(model.Email, model.Password, true);
+            var dto = await _authService.Authorize(model.Email, model.Password, true).ConfigureAwait(true);
             
             return dto;
         }

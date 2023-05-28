@@ -60,7 +60,7 @@ public class Receiver : IEventBusReceiver, IDisposable
                 
                 var eventData = subscription.e.FromEventData(message);
                 
-                await subscription.handler.Handle(eventData);
+                await subscription.handler.Handle(eventData).ConfigureAwait(true);
             };
             
             _channel.BasicConsume(

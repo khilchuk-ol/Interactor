@@ -21,7 +21,8 @@ public class GetSplitQueryHandler : IRequestHandler<GetSplitQuery, SplitDto>
     public async Task<SplitDto> Handle(GetSplitQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(request.Id, cancellationToken);
+            .FindAsync(request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (entity == null)
         {

@@ -27,6 +27,6 @@ public class UserDeletedEventHandler : IEventBusEventHandler
             throw new Exception("mediator is not found");
         }
 
-        await mediator.Send(new DeleteUserCommand(eventData.Id));
+        await mediator.Send(new DeleteUserCommand(eventData.Id)).ConfigureAwait(true);
     }
 }

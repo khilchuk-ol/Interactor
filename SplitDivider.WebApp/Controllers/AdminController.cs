@@ -29,24 +29,30 @@ public class AdminController : ApiControllerBase
     [HttpGet("users")]
     public async Task<List<ApplicationUser>> GetUsers()
     {
-        return await _userManager.Users.ToListAsync();
+        return await _userManager.Users.ToListAsync().ConfigureAwait(true);
     }
     
     [HttpGet("users/{email}")]
     public async Task<IActionResult> GetUser(string email)
     {
-        var user = await _userManager.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+        var user = await _userManager.Users
+            .Where(u => u.Email == email)
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(true);
         if (user == null)
         {
             return NotFound();
         }
 
-        var roleNames = await _userManager.GetRolesAsync(user);
+        var roleNames = await _userManager.GetRolesAsync(user).ConfigureAwait(true);
         var roles = new List<IdentityRole>();
 
         if (roleNames != null)
         {
-            roles = await _roleManager.Roles.Where(r => roleNames.Contains(r.Name)).ToListAsync();
+            roles = await _roleManager.Roles
+                .Where(r => roleNames.Contains(r.Name))
+                .ToListAsync()
+                .ConfigureAwait(true);
         }
 
         return Ok(new
@@ -59,7 +65,7 @@ public class AdminController : ApiControllerBase
     [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {
-        var roles = await _roleManager.Roles.ToListAsync();
+        var roles = await _roleManager.Roles.ToListAsync().ConfigureAwait(true);
         
         return Ok(roles);
     }
@@ -67,7 +73,7 @@ public class AdminController : ApiControllerBase
     [HttpDelete("user/{userId}/role/{role}")]
     public async Task<IActionResult> DeleteRole(string userId, string role)
     {
-        var res = await _identityService.DeleteRoleForUser(userId, role);
+        var res = await _identityService.DeleteRoleForUser(userId, role).ConfigureAwait(true);
         
         return res ? Ok() : BadRequest();
     }
@@ -75,7 +81,7 @@ public class AdminController : ApiControllerBase
     [HttpPut("user/{userId}/role/{role}")]
     public async Task<IActionResult> AddRole(string userId, string role)
     {
-        var res = await _identityService.AddRoleForUser(userId, role);
+        var res = await _identityService.AddRoleForUser(userId, role).ConfigureAwait(true);
 
         return res ? Ok() : BadRequest();
     }

@@ -42,7 +42,7 @@ public class CreateSplitCommandHandler : IRequestHandler<CreateSplitCommand, int
 
         _context.Splits.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
 
         return entity.Id;
     }

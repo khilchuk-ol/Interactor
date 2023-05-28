@@ -25,6 +25,7 @@ public class GetSplitUsersQueryHandler : IRequestHandler<GetSplitUsersQuery, IRe
             .Where(us => us.SplitId == request.Id)
             .OrderByDescending(us => us.SplitId)
             .ProjectTo<SplitUserDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(true);
     }
 }

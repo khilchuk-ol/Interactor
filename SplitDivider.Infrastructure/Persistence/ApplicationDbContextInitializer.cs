@@ -31,7 +31,7 @@ public class ApplicationDbContextInitializer
         {
             if (_context.Database.IsMySql())
             {
-                await _context.Database.MigrateAsync();
+                await _context.Database.MigrateAsync().ConfigureAwait(true);
             }
         }
         catch (Exception ex)
@@ -45,7 +45,7 @@ public class ApplicationDbContextInitializer
     {
         try
         {
-            await TrySeedAsync();
+            await TrySeedAsync().ConfigureAwait(true);
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class ApplicationDbContextInitializer
         {
             if (_roleManager.Roles.All(r => r.Name != role.Name))
             {
-                await _roleManager.CreateAsync(role);
+                await _roleManager.CreateAsync(role).ConfigureAwait(true);
             }
         }
 
@@ -76,7 +76,7 @@ public class ApplicationDbContextInitializer
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
-            await _userManager.CreateAsync(administrator, "Administrator1!");
+            await _userManager.CreateAsync(administrator, "Administrator1!").ConfigureAwait(true);
 
             var rolesToAdd = new List<string>();
 
@@ -90,7 +90,7 @@ public class ApplicationDbContextInitializer
             
             if (rolesToAdd.Count > 0)
             {
-                await _userManager.AddToRolesAsync(administrator, rolesToAdd);
+                await _userManager.AddToRolesAsync(administrator, rolesToAdd).ConfigureAwait(true);
             }
         }
     }

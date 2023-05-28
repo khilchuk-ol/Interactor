@@ -33,6 +33,6 @@ public class UserRegisteredEventHandler : IEventBusEventHandler
             CountryId = eventData.CountryId,
             Gender = eventData.Gender,
             RegDt = eventData.RegDt
-        });
+        }).ConfigureAwait(true);
     }
 }

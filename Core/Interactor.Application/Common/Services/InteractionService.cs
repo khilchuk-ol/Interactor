@@ -21,8 +21,8 @@ public class InteractionService : IInteractionService
     
     public async Task HandleRandomUsersInteracted()
     {
-        var minId = await _context.Users.MinAsync(u => u.Id);
-        var maxId = await _context.Users.MaxAsync(u => u.Id);
+        var minId = await _context.Users.MinAsync(u => u.Id).ConfigureAwait(true);
+        var maxId = await _context.Users.MaxAsync(u => u.Id).ConfigureAwait(true);
 
         var random = new Random();
 

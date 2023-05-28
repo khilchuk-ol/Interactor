@@ -29,7 +29,7 @@ public class AuthService
     
     public async Task<AuthUserDTO> Authorize(string email, string password, bool rememberMe)
     {
-        var signedUser = await _userManager.FindByEmailAsync(email);
+        var signedUser = await _userManager.FindByEmailAsync(email).ConfigureAwait(true);
 
         if (signedUser == null) throw new UnauthorizedAccessException();
         
@@ -37,11 +37,14 @@ public class AuthService
             signedUser.UserName, 
             password, 
             rememberMe, 
-            false);
+            false)
+            .ConfigureAwait(true);
 
         if (!result.Succeeded) throw new UnauthorizedAccessException();
         
-        string accessToken = await _jwtFactory.GenerateAccessToken(signedUser.Id, signedUser.UserName, signedUser.Email);
+        string accessToken = await _jwtFactory
+            .GenerateAccessToken(signedUser.Id, signedUser.UserName, signedUser.Email)
+            .ConfigureAwait(true);
         
         return new AuthUserDTO
         {

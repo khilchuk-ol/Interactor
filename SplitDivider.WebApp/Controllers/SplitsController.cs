@@ -19,14 +19,14 @@ public class SplitsController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedList<SplitBriefDto>>> GetSplitsWithPagination([FromQuery] GetSplitsWithPaginationQuery query)
     {
-        return await Mediator.Send(query);
+        return await Mediator.Send(query).ConfigureAwait(true);
     }
     
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<SplitDto>> Get(int id)
     {
-        return await Mediator.Send(new GetSplitQuery(id));
+        return await Mediator.Send(new GetSplitQuery(id)).ConfigureAwait(true);
     }
     
     [HttpGet("{id}/graph")]
@@ -48,13 +48,13 @@ public class SplitsController : ApiControllerBase
     [HttpGet("{id}/users")]
     public async Task<IReadOnlyCollection<SplitUserDto>> GetSplitUsers(int id)
     {
-        return await Mediator.Send(new GetSplitUsersQuery(id));
+        return await Mediator.Send(new GetSplitUsersQuery(id)).ConfigureAwait(true);
     }
     
     [HttpPost]
     public async Task<ActionResult<int>> Create(CreateSplitCommand command)
     {
-        return await Mediator.Send(command);
+        return await Mediator.Send(command).ConfigureAwait(true);
     }
 
     [HttpDelete("{id}")]
@@ -62,7 +62,7 @@ public class SplitsController : ApiControllerBase
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Delete(int id)
     {
-        await Mediator.Send(new DeleteSplitCommand(id));
+        await Mediator.Send(new DeleteSplitCommand(id)).ConfigureAwait(true);
 
         return NoContent();
     }
@@ -75,7 +75,7 @@ public class SplitsController : ApiControllerBase
     {
         command.Id = id;
 
-        await Mediator.Send(command);
+        await Mediator.Send(command).ConfigureAwait(true);
 
         return NoContent();
     }
@@ -85,7 +85,7 @@ public class SplitsController : ApiControllerBase
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Activate(int id)
     {
-        await Mediator.Send(new ActivateSplitCommand(id));
+        await Mediator.Send(new ActivateSplitCommand(id)).ConfigureAwait(true);
 
         return NoContent();
     }
@@ -95,7 +95,7 @@ public class SplitsController : ApiControllerBase
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Suspend(int id)
     {
-        await Mediator.Send(new SuspendSplitCommand(id));
+        await Mediator.Send(new SuspendSplitCommand(id)).ConfigureAwait(true);
 
         return NoContent();
     }
@@ -105,7 +105,7 @@ public class SplitsController : ApiControllerBase
     [ProducesDefaultResponseType]
     public async Task<IActionResult> Close(int id)
     {
-        await Mediator.Send(new CloseSplitCommand(id));
+        await Mediator.Send(new CloseSplitCommand(id)).ConfigureAwait(true);
 
         return NoContent();
     }

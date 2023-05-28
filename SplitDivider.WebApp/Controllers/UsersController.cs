@@ -10,6 +10,6 @@ public class UsersController : ApiControllerBase
     [HttpGet("{id}/splits")]
     public async Task<IReadOnlyCollection<UserSplitDto>> GetUserSplits(int id)
     {
-        return await Mediator.Send(new GetUserSplitsQuery(id));
+        return await Mediator.Send(new GetUserSplitsQuery(id)).ConfigureAwait(true);
     }
 }

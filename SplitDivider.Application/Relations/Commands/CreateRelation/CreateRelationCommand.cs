@@ -33,6 +33,6 @@ public class CreateRelationCommandHanler : IRequestHandler<CreateRelationCommand
 
         _context.Relations.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 }

@@ -34,6 +34,6 @@ public class UserChangedEventHandler : IEventBusEventHandler
             CountryId = eventData.CountryId,
             Gender = eventData.Gender,
             State = eventData.State.HasValue ? (UserState)eventData.State : null
-        });
+        }).ConfigureAwait(true);
     }
 }

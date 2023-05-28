@@ -32,6 +32,6 @@ public class UsersInteractedEventHandler : IEventBusEventHandler
             UserId = eventData.UserId,
             ContactId = eventData.ContactId,
             InteractionType = eventData.Interaction
-        });
+        }).ConfigureAwait(true);
     }
 }

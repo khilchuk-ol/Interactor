@@ -21,7 +21,8 @@ public class ActivateSplitCommandHandler : IRequestHandler<ActivateSplitCommand>
     public async Task Handle(ActivateSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(request.Id, cancellationToken);
+            .FindAsync(request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (entity == null)
         {
@@ -37,6 +38,6 @@ public class ActivateSplitCommandHandler : IRequestHandler<ActivateSplitCommand>
         
         entity.AddDomainEvent(new SplitActivatedEvent(entity));
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 }

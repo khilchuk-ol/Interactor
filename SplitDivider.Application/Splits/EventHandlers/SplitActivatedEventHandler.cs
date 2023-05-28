@@ -55,7 +55,8 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
 
         var usersInSplit = await usersInSplitQuery
             .Select(u => u.Id)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(true);
 
         var graphDto = _graphBuilder.BuildGraph(split, usersInSplit);
 
@@ -85,9 +86,9 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
             _context.UserSplits.Add(userGroup);
         }
 
-        var splitEntity = await _context.Splits.FindAsync(split.Id);
+        var splitEntity = await _context.Splits.FindAsync(split.Id).ConfigureAwait(true);
         splitEntity!.State = SplitState.ReadyToTest;
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 }

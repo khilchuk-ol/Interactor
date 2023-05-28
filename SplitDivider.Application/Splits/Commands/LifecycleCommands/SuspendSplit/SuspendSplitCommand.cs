@@ -21,7 +21,8 @@ public class SuspendSplitCommandHandler : IRequestHandler<SuspendSplitCommand>
     public async Task Handle(SuspendSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(request.Id, cancellationToken);
+            .FindAsync(request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (entity == null)
         {
@@ -37,8 +38,9 @@ public class SuspendSplitCommandHandler : IRequestHandler<SuspendSplitCommand>
 
         await _context.UserSplits
             .Where(ug => ug.SplitId == entity.Id)
-            .DeleteAsync(cancellationToken);
+            .DeleteAsync(cancellationToken)
+            .ConfigureAwait(true);
         
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 }

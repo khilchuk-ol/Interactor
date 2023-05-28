@@ -25,7 +25,7 @@ public class IdentityService : IIdentityService
 
     public async Task<string?> GetUserNameAsync(string userId)
     {
-        var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
+        var user = await _userManager.Users.FirstAsync(u => u.Id == userId).ConfigureAwait(true);
 
         return user.UserName;
     }
@@ -38,7 +38,7 @@ public class IdentityService : IIdentityService
             Email = userName,
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, password).ConfigureAwait(true);
 
         return (result.ToApplicationResult(), user.Id);
     }
@@ -47,7 +47,7 @@ public class IdentityService : IIdentityService
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        return user != null && await _userManager.IsInRoleAsync(user, role);
+        return user != null && await _userManager.IsInRoleAsync(user, role).ConfigureAwait(true);
     }
 
     public async Task<bool> AuthorizeAsync(string userId, string policyName)
@@ -59,9 +59,9 @@ public class IdentityService : IIdentityService
             return false;
         }
 
-        var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
+        var principal = await _userClaimsPrincipalFactory.CreateAsync(user).ConfigureAwait(true);
 
-        var result = await _authorizationService.AuthorizeAsync(principal, policyName);
+        var result = await _authorizationService.AuthorizeAsync(principal, policyName).ConfigureAwait(true);
 
         return result.Succeeded;
     }
@@ -70,38 +70,38 @@ public class IdentityService : IIdentityService
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        return user != null ? await DeleteUserAsync(user) : Result.Success();
+        return user != null ? await DeleteUserAsync(user).ConfigureAwait(true) : Result.Success();
     }
 
     public async Task<Result> DeleteUserAsync(ApplicationUser user)
     {
-        var result = await _userManager.DeleteAsync(user);
+        var result = await _userManager.DeleteAsync(user).ConfigureAwait(true);
 
         return result.ToApplicationResult();
     }
 
     public async Task<bool> AddRoleForUser(string userId, string role)
     {
-        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId).ConfigureAwait(true);
         if (user == null)
         {
             return false;
         }
 
-        var res = await _userManager.AddToRoleAsync(user, role);
+        var res = await _userManager.AddToRoleAsync(user, role).ConfigureAwait(true);
         
         return res.Succeeded;
     }
 
     public async Task<bool> DeleteRoleForUser(string userId, string role)
     {
-        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId).ConfigureAwait(true);
         if (user == null)
         {
             return false;
         }
 
-        var res = await _userManager.RemoveFromRoleAsync(user, role);
+        var res = await _userManager.RemoveFromRoleAsync(user, role).ConfigureAwait(true);
         
         return res.Succeeded;
     }

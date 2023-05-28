@@ -35,7 +35,8 @@ public class UpdateSplitCommandHandler : IRequestHandler<UpdateSplitCommand>
     public async Task Handle(UpdateSplitCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Splits
-            .FindAsync(request.Id, cancellationToken);
+            .FindAsync(request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (entity == null)
         {
@@ -72,6 +73,6 @@ public class UpdateSplitCommandHandler : IRequestHandler<UpdateSplitCommand>
             entity.MinRegistrationDt = DateTime.Parse(request.MinRegDt, CultureInfo.InvariantCulture);
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 }

@@ -41,9 +41,9 @@ public class UserService : IUserService
             State = UserState.Activated
         };
 
-        var entity = await _context.Users.AddAsync(user);
+        var entity = await _context.Users.AddAsync(user).ConfigureAwait(true);
 
-        await _context.SaveChangesAsync(default);
+        await _context.SaveChangesAsync(default).ConfigureAwait(true);
 
         var eEvent = new UserRegisteredEvent
         {
@@ -68,14 +68,14 @@ public class UserService : IUserService
 
     public async Task BanRandomUser()
     {
-        var minId = await _context.Users.MinAsync(u => u.Id);
-        var maxId = await _context.Users.MaxAsync(u => u.Id);
+        var minId = await _context.Users.MinAsync(u => u.Id).ConfigureAwait(true);
+        var maxId = await _context.Users.MaxAsync(u => u.Id).ConfigureAwait(true);
 
         var random = new Random();
 
         var userId = random.Next(minId, maxId + 1);
 
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(userId).ConfigureAwait(true);
         if (user == null)
         {
             return;
@@ -91,6 +91,6 @@ public class UserService : IUserService
         
         _publisher.Send(eEvent);
 
-        await _context.SaveChangesAsync(default);
+        await _context.SaveChangesAsync(default).ConfigureAwait(true);
     }
 }

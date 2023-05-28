@@ -18,7 +18,8 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.AppUsers
-            .FindAsync(request.Id, cancellationToken);
+            .FindAsync(request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (entity == null)
         {
@@ -27,7 +28,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
 
         _context.AppUsers.Remove(entity);
         
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }
 
 }
