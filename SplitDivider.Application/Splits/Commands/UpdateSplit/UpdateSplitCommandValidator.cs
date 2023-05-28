@@ -26,17 +26,5 @@ public class UpdateSplitCommandValidator : AbstractValidator<UpdateSplitCommand>
                 }
             })
             .When(s => s.ActionsWeights != null);
-
-        RuleFor(s => s.Gender)
-            .Must(Gender.IsSupported!)
-            .When(s => s.Gender != null);
-
-        RuleFor(s => s.MinRegDt)
-            .Must(dt => DateTime.TryParse(dt, CultureInfo.InvariantCulture, out _))
-            .When(s => s.MinRegDt != null);
-
-        RuleFor(s => s.CountryIds)
-            .Must(cIds => cIds!.All(id => id >= 0))
-            .When(s => s.CountryIds != null);
     }
 }
