@@ -34,6 +34,7 @@
 
     <ItemGroup>
       <Folder Include="Relations\Commands" />
+      <Folder Include="Splits\Graph\Algorithms\StoerWagner\" />
     </ItemGroup>
 
 </Project>

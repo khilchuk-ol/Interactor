@@ -4,11 +4,11 @@ using SplitDivider.Application.Splits.Graph.Interfaces;
 
 namespace SplitDivider.Application.Splits.Graph;
 
-public class MinCutGraphCutter : IGraphCutter
+public class StoerWagnerMinCutGraphCutter : IGraphCutter
 {
     public (List<int> first, List<int> second) CutSplitGraph(SplitGraphDto graphDto)
     {
-        var minCut = new StoerWagnerMinCut<int>();
+        var minCut = new StoerWagnerMinCutImpl<int>();
 
         var cut = minCut.ComputeMinCut(graphDto.Graph);
 

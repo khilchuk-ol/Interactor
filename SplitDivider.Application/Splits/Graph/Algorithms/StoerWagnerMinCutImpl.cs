@@ -2,7 +2,7 @@ using SplitDivider.Application.Splits.Graph.Algorithms.Common;
 
 namespace SplitDivider.Application.Splits.Graph.Algorithms;
 
-public class StoerWagnerMinCut<TVertex> where TVertex : IComparable<TVertex>
+public class StoerWagnerMinCutImpl<TVertex> where TVertex : IComparable<TVertex>
 {
     public class MinCut 
     {

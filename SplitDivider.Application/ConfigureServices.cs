@@ -15,7 +15,7 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IGraphBuilder, GraphBuilder>();
-        services.AddScoped<IGraphCutter, MinCutGraphCutter>();
+        services.AddScoped<IGraphCutter, StoerWagnerMinCutGraphCutter>();
         
         services.AddAutoMapper(cfg => cfg.Internal().MethodMappingEnabled = false, Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
