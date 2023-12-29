@@ -4,29 +4,13 @@ namespace SplitDivider.Application.Splits.Graph.Algorithms;
 
 public class StoerWagnerMinCutImpl<TVertex> where TVertex : IComparable<TVertex>
 {
-    public class MinCut 
-    {
-        public MinCut(Graph<TVertex, int> first, Graph<TVertex, int> second, float minCutWeight)
-        {
-            First = first;
-            Second = second;
-            MinCutWeight = minCutWeight;
-        }
-
-        public Graph<TVertex, int> First { get; }
-        
-        public Graph<TVertex, int> Second { get; }
-        
-        public float MinCutWeight { get; }
-    }
-    
     public record CutOfThePhase {
         public int S { get; init; }
         public int T { get; init; }
         public float Weight { get; init; }
     }
 
-    public MinCut ComputeMinCut(Graph<TVertex, int> g) 
+    public MinCut<TVertex> ComputeMinCut(Graph<TVertex, int> g) 
     {
         if(g.VerticesCount < 2)
         {
@@ -68,7 +52,7 @@ public class StoerWagnerMinCutImpl<TVertex> where TVertex : IComparable<TVertex>
         return ConstructMinCutResult(originalGraph, currentBestPartition);
     }
 
-    private MinCut ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int>? partition) 
+    private MinCut<TVertex> ConstructMinCutResult(Graph<TVertex, int> originalGraph, HashSet<int>? partition) 
     {
         if (partition == null)
         {
@@ -130,7 +114,7 @@ public class StoerWagnerMinCutImpl<TVertex> where TVertex : IComparable<TVertex>
             }
         }
 
-        return new MinCut(first, second, cutWeight);
+        return new MinCut<TVertex>(first, second, cutWeight);
     }
 
     Graph<TVertex, int> MergeVerticesFromCut(Graph<TVertex, int> g, CutOfThePhase cutOfThePhase) 
