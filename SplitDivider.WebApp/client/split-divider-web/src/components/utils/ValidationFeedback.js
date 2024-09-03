@@ -13,7 +13,8 @@ export const required = value => {
 };
 
 export const validEmail = value => {
-  if (!isEmail(value)) {
+  //if (!isEmail(value)) {
+  if(!value) {
     return (
       <FormFeedback style={{ display: "block" }}>
         This is not a valid email.

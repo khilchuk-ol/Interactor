@@ -44,3 +44,7 @@
 .btn-in-row {
   margin: 0.2rem;
 }
+
+.App .footer {
+  height: 4rem;
+}

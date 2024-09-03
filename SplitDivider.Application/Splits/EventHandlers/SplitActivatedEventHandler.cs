@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,24 +20,39 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
     
     private readonly IGraphCutter _graphCutter;
 
+    private readonly IPerformanceTracker _perfTracker;
+
+    private const string FETCH_USERS_OPERATION = "fetch users from database";
+    private const string BUILD_GRAPH_OPERATION = "build graph";
+    private const string CUT_GRAPH_OPERATION = "cut graph";
+    private const string SAVE_GROUPS_OPERATION = "save data to database";
+
     public SplitActivatedEventHandler(
         ILogger<SplitActivatedEventHandler> logger,
         IApplicationDbContext context,
         IGraphBuilder graphBuilder,
-        IGraphCutter graphCutter
+        IGraphCutter graphCutter,
+        IPerformanceTracker perfTracker
     )
     {
         _logger = logger;
         _context = context;
         _graphBuilder = graphBuilder;
         _graphCutter = graphCutter;
+        _perfTracker = perfTracker;
     }
     
     public async Task Handle(SplitActivatedEvent notification, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Split activated: Id={Id}", notification.Split.Id);
 
+        var operations = new Dictionary<string, long>();
+
+        var generalSw = Stopwatch.StartNew();
+        var indSw = Stopwatch.StartNew();
+
         var split = notification.Split;
+        
         var usersInSplitQuery = _context.AppUsers.AsQueryable();
 
         if (split.Gender != null)
@@ -54,13 +71,29 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
         }
 
         var usersInSplit = await usersInSplitQuery
+            .AsNoTracking()
             .Select(u => u.Id)
             .ToListAsync(cancellationToken);
 
-        var graphDto = _graphBuilder.BuildGraph(split, usersInSplit);
+        operations[FETCH_USERS_OPERATION] = indSw.ElapsedMilliseconds;
+        indSw.Stop();
+
+        indSw = Stopwatch.StartNew();
+
+        var graphDto = _graphBuilder.BuildGraph(split, usersInSplit); // async ?
+        
+        operations[BUILD_GRAPH_OPERATION] = indSw.ElapsedMilliseconds;
+        indSw.Stop();
+        
+        indSw = Stopwatch.StartNew();
 
         var groups = _graphCutter.CutSplitGraph(graphDto);
+        
+        operations[CUT_GRAPH_OPERATION] = indSw.ElapsedMilliseconds;
+        indSw.Stop();
 
+        indSw = Stopwatch.StartNew();
+        
         foreach (var id in groups.first)
         {
             var userGroup = new UserSplit
@@ -87,7 +120,14 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
 
         var splitEntity = await _context.Splits.FindAsync(split.Id);
         splitEntity!.State = SplitState.ReadyToTest;
-
+        
         await _context.SaveChangesAsync(cancellationToken);
+        
+        operations[SAVE_GROUPS_OPERATION] = indSw.ElapsedMilliseconds;
+        indSw.Stop();
+        
+        generalSw.Stop();
+        
+        _perfTracker.TrackPerformance($"Split{split.Id} {_graphCutter.GetName()} (opt. db, parallel impr.) graph cut (vertices: {graphDto.Graph.VerticesCount})", generalSw.ElapsedMilliseconds, operations.Select(p => $"{p.Key} in {p.Value}ms").ToList());
     }
 }

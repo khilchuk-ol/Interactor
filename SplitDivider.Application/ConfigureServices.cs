@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SplitDivider.Application.Common.Behaviours;
 using SplitDivider.Application.Splits.Graph;
+using SplitDivider.Application.Splits.Graph.Algorithms.Heuristics;
 using SplitDivider.Application.Splits.Graph.Interfaces;
 using SplitDivider.Application.Users.Commands.CreateUser;
 
@@ -15,7 +16,8 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IGraphBuilder, GraphBuilder>();
-        services.AddScoped<IGraphCutter, StoerWagnerMinCutGraphCutter>();
+        services.AddScoped<IHeuristic<int>, DistanceBasedHeuristic<int>>();
+        services.AddScoped<IGraphCutter, PushRelabelMinCutGraphCutter>();
         
         services.AddAutoMapper(cfg => cfg.Internal().MethodMappingEnabled = false, Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);

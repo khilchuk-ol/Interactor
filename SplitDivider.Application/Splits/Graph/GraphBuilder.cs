@@ -1,4 +1,7 @@
+using System.Collections.Concurrent;
 using System.Xml;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using QuikGraph;
 using QuikGraph.Serialization;
 using Shared.Values.ValueObjects;
@@ -14,9 +17,14 @@ public class GraphBuilder : IGraphBuilder
 {
     private readonly IApplicationDbContext _context;
 
-    public GraphBuilder(IApplicationDbContext context)
+    private readonly IServiceProvider _services;
+    
+    private const int MIN_EDGE_WEIGHT = 1;
+
+    public GraphBuilder(IApplicationDbContext context, IServiceProvider services)
     {
         _context = context;
+        _services = services;
     }
 
     public SplitGraphDto BuildGraph(Split split, List<int> userIds)
@@ -24,7 +32,7 @@ public class GraphBuilder : IGraphBuilder
         var qGraph = new UndirectedGraph<int, WeightedEdge<int, int>>();
         
         var graph = new Algorithms.Common.Graph<int, int>();
-        var connections = new Dictionary<int, int>();
+        var connections = new ConcurrentDictionary<int, int>();
 
         var now = DateTime.Now;
 
@@ -36,16 +44,35 @@ public class GraphBuilder : IGraphBuilder
                 Value = uId
             });
         }
+        
+        var ctxLock = new object();
+        var graphLock = new object();
 
-        foreach (var userId in userIds)
+        Parallel.ForEach(userIds, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 10 }, userId =>
         {
+            List<Relation> userRelations;
+            
+            lock (ctxLock)
+            {
+                userRelations = _context.Relations
+                    .Where(r => r.UserId == userId)
+                    .ToList();
+            }
+            
             foreach (var contactId in userIds)
             {
                 if (userId == contactId) continue;
-                
-                var relations = _context.Relations
-                    .Where(r => r.UserId == userId && r.ContactId == contactId)
-                    .ToList();
+
+                var relations = userRelations.Where(r => r.ContactId == contactId).ToList();
+
+                // using (var scope = _services.CreateScope())
+                // {
+                //     var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                //     
+                //     relations = context.Relations
+                //         .Where(r => r.UserId == userId && r.ContactId == contactId)
+                //         .ToList();
+                // }
                 
                 var intCost = 1;
 
@@ -61,7 +88,7 @@ public class GraphBuilder : IGraphBuilder
                 
                         var generalWeight = split.ActionsWeights[interaction];
 
-                        var timeDiff = now.Subtract(relation.Dt).Hours / 24;
+                        var timeDiff = now.Subtract(relation.Dt).TotalHours / 24;
 
                         var k = 1 / (1 + timeDiff * timeDiff);
 
@@ -70,25 +97,26 @@ public class GraphBuilder : IGraphBuilder
                         cost += weight;
                     }
 
-                    intCost = (int)(cost * 10);
+                    intCost = Math.Max((int)(cost * 10), MIN_EDGE_WEIGHT);
                 }
 
                 var edge = new WeightedEdge<int, int>(userId, contactId, intCost / 100);
-                qGraph.AddVerticesAndEdge(edge);
-                
-                graph.AddEdge(userId, new Algorithms.Edge<int>
-                {
-                    DestinationVertexId = contactId,
-                    Value = intCost
-                });
 
-                if (connections.Keys.Contains(userId)) connections[userId] += 1;
-                else connections.Add(userId, 1);
+                lock (graphLock)
+                {
+                    qGraph.AddVerticesAndEdge(edge);
                 
-                if (connections.Keys.Contains(contactId)) connections[contactId] += 1;
-                else connections.Add(contactId, 1);
+                    graph.AddEdge(userId, new Algorithms.Edge<int>
+                    {
+                        DestinationVertexId = contactId,
+                        Value = intCost
+                    });
+                }
+
+                connections.AddOrUpdate(userId, (_) => 1, (_, old) => ++old);
+                connections.AddOrUpdate(contactId, (_) => 1, (_, old) => ++old);
             }
-        }
+        });
         
         SaveGraph(split.Id, qGraph);
 

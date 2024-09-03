@@ -5,7 +5,8 @@ export const PAGE_SIZE = 20;
 
 const getSplits = async (page, state = null) => {
   let params = {
-    pageSize: PAGE_SIZE
+    pageSize: PAGE_SIZE,
+    pageNumber: page,
   };
 
   if (state) {

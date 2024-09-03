@@ -25,6 +25,8 @@ public static class ConfigureServices
         services.AddScoped<JwtFactory>();
         services.AddScoped<AuthService>();
 
+        services.AddSingleton<IPerformanceTracker, FilePerformanceTracker>();
+
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,15 +36,15 @@ public static class ConfigureServices
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("DefaultConnection")!,
-                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)), contextLifetime: ServiceLifetime.Transient);
         }
         
-        services.AddScoped<IApplicationDbContext>(provider =>
+        services.AddTransient<IApplicationDbContext>(provider =>
         {
             var context =  provider.GetRequiredService<ApplicationDbContext>();
-
+        
             context.Database.EnsureCreated();
-
+        
             return context;
         });
         

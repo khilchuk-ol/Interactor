@@ -36,7 +36,7 @@ public class ActivateSplitCommandHandler : IRequestHandler<ActivateSplitCommand>
         entity.State = SplitState.Activated;
         
         entity.AddDomainEvent(new SplitActivatedEvent(entity));
-
+        
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

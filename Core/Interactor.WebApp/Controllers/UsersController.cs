@@ -20,9 +20,14 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task SendRandomUserRegistered()
+    public async Task SendRandomUserRegistered([FromQuery(Name = "count")] int count)
     {
-        await _userSvc.RegisterRandomUser();
+        if (count == 0) count++;
+        
+        for (var i = 0; i < count; i++)
+        {
+            await _userSvc.RegisterRandomUser();
+        }
     }
     
     [HttpPost("ban")]
@@ -32,8 +37,13 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("interacted")]
-    public async Task SendRandomUsersInteracted()
+    public async Task SendRandomUsersInteracted([FromQuery(Name = "count")] int count)
     {
-        await _interactionSvc.HandleRandomUsersInteracted();
+        if (count == 0) count++;
+        
+        for (var i = 0; i < count; i++)
+        {
+            await _interactionSvc.HandleRandomUsersInteracted();
+        }
     }
 }

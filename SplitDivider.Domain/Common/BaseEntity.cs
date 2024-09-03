@@ -14,6 +14,8 @@ public abstract class BaseEntity
     public void AddDomainEvent(BaseEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
+        
+        Thread.Sleep(TimeSpan.FromSeconds(1)); 
     }
 
     public void RemoveDomainEvent(BaseEvent domainEvent)

@@ -4,7 +4,7 @@ namespace SplitDivider.Application.Splits.Graph.Common;
 
 public class SplitGraphDto
 {
-    public Dictionary<int, int> Connections { get; set; }
+    public IDictionary<int, int> Connections { get; set; }
     
     public Graph<int, int> Graph { get; set; }
 }

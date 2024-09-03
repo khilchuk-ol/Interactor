@@ -31,6 +31,7 @@
 
     <ItemGroup>
       <Folder Include="Authorization" />
+      <Folder Include="Logs" />
       <Folder Include="Visualization" />
     </ItemGroup>
 

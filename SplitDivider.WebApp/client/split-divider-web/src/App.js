@@ -20,6 +20,8 @@ function App() {
       <HeaderNavbar user={user} />
 
       <Router user={user} setUser={setUser} />
+
+      <div className="footer"></div>
     </div>
   );
 }

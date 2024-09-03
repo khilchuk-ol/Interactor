@@ -13,4 +13,5 @@ public interface IApplicationDbContext
     DbSet<UserSplit> UserSplits { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    
 }

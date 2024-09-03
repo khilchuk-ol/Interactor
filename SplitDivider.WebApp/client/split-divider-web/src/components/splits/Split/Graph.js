@@ -44,7 +44,8 @@ export default function Graph(props) {
         {
           selector: "edge",
           style: {
-            width: "data(weight)"
+            width: "data(weight)",
+            lineColor: "black"
           }
         },
         {

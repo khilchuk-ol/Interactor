@@ -30,7 +30,7 @@ public class UserService : IUserService
         var genderId = random.Next(1, 3);
         var gender = genderId == 1 ? Gender.Male : Gender.Female;
 
-        var countryId = random.Next(1, 50);
+        var countryId = random.Next(1, 6);
 
         var user = new User
         {

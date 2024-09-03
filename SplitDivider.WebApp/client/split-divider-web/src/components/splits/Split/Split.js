@@ -17,7 +17,7 @@ import {
 import UpdateSplitModal from "../Update/UpdateSplitModal";
 import SplitHelper from "../../../services/split.helper";
 import ButtonsGroup from "../inputs/ButtonsGroup";
-import { GENDERS_MAP } from "../../../services/gender.helper";
+import {ALL_GENDERS, GENDERS_MAP} from "../../../services/gender.helper";
 import { COUNTRIES_MAP } from "../../../services/geo.helper";
 import { prepareDatetimeForDisplay } from "../../../services/datetime.helper";
 import Graph from "./Graph";
@@ -133,7 +133,7 @@ export default function Split() {
                 </table>
               </ListGroupItem>
               <ListGroupItem>
-                <b>Gender:</b> {GENDERS_MAP[split.gender]}
+                <b>Gender:</b> {GENDERS_MAP[split.gender ? split.gender : ALL_GENDERS]}
               </ListGroupItem>
               <ListGroupItem>
                 <b>Countries:</b>{" "}
