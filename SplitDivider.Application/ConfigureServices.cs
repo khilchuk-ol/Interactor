@@ -17,7 +17,7 @@ public static class ConfigureServices
     {
         services.AddScoped<IGraphBuilder, GraphBuilder>();
         services.AddScoped<IHeuristic<int>, DistanceBasedHeuristic<int>>();
-        services.AddScoped<IGraphCutter, PushRelabelMinCutGraphCutter>();
+        services.AddScoped<IGraphPartitioner, RelatedGroupsGraphPartitioner>();
         
         services.AddAutoMapper(cfg => cfg.Internal().MethodMappingEnabled = false, Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);

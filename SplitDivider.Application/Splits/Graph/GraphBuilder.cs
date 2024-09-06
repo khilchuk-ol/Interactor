@@ -64,15 +64,6 @@ public class GraphBuilder : IGraphBuilder
                 if (userId == contactId) continue;
 
                 var relations = userRelations.Where(r => r.ContactId == contactId).ToList();
-
-                // using (var scope = _services.CreateScope())
-                // {
-                //     var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-                //     
-                //     relations = context.Relations
-                //         .Where(r => r.UserId == userId && r.ContactId == contactId)
-                //         .ToList();
-                // }
                 
                 var intCost = 1;
 

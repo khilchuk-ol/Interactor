@@ -18,7 +18,7 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
 
     private readonly IGraphBuilder _graphBuilder;
     
-    private readonly IGraphCutter _graphCutter;
+    private readonly IGraphPartitioner _graphPartitioner;
 
     private readonly IPerformanceTracker _perfTracker;
 
@@ -31,14 +31,14 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
         ILogger<SplitActivatedEventHandler> logger,
         IApplicationDbContext context,
         IGraphBuilder graphBuilder,
-        IGraphCutter graphCutter,
+        IGraphPartitioner graphPartitioner,
         IPerformanceTracker perfTracker
     )
     {
         _logger = logger;
         _context = context;
         _graphBuilder = graphBuilder;
-        _graphCutter = graphCutter;
+        _graphPartitioner = graphPartitioner;
         _perfTracker = perfTracker;
     }
     
@@ -87,7 +87,7 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
         
         indSw = Stopwatch.StartNew();
 
-        var groups = _graphCutter.CutSplitGraph(graphDto);
+        var groups = _graphPartitioner.PartitionSplitGraph(graphDto);
         
         operations[CUT_GRAPH_OPERATION] = indSw.ElapsedMilliseconds;
         indSw.Stop();
@@ -128,6 +128,6 @@ public class SplitActivatedEventHandler : INotificationHandler<SplitActivatedEve
         
         generalSw.Stop();
         
-        _perfTracker.TrackPerformance($"Split{split.Id} {_graphCutter.GetName()} (opt. db, parallel impr.) graph cut (vertices: {graphDto.Graph.VerticesCount})", generalSw.ElapsedMilliseconds, operations.Select(p => $"{p.Key} in {p.Value}ms").ToList());
+        _perfTracker.TrackPerformance($"Split{split.Id} {_graphPartitioner.GetName()} (opt. db, parallel impr.) graph cut (vertices: {graphDto.Graph.VerticesCount})", generalSw.ElapsedMilliseconds, operations.Select(p => $"{p.Key} in {p.Value}ms").ToList());
     }
 }
